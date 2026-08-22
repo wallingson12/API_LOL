@@ -1,0 +1,1950 @@
+{
+  "266": {
+    "id": "Aatrox",
+    "name": "Aatrox",
+    "tags": [
+      "Fighter"
+    ],
+    "attackrange": 175,
+    "key": "266",
+    "danger_tip": "Cura na troca e pune quando você erra o timing."
+  },
+  "103": {
+    "id": "Ahri",
+    "name": "Ahri",
+    "tags": [
+      "Mage",
+      "Assassin"
+    ],
+    "attackrange": 550,
+    "key": "103",
+    "danger_tip": "Encantamento abre distância; ela entra e sai com segurança.",
+    "enemy_tips": [
+      "A capacidade de sobrevivência de Ahri é drasticamente reduzida quando sua habilidade Ultimate, Ímpeto Espiritual, estiver inativa.",
+      "Fique atrás das tropas para fazer com que seja difícil o uso de Encanto. Isto reduzirá significativamente o potencial de dano de Ahri."
+    ]
+  },
+  "84": {
+    "id": "Akali",
+    "name": "Akali",
+    "tags": [
+      "Assassin"
+    ],
+    "attackrange": 125,
+    "key": "84",
+    "danger_tip": "A fumaça esconde ela e dificulta acertar o controle.",
+    "enemy_tips": [
+      "Akali ainda pode ser atingida por habilidades com área de ação enquanto estiver obscurecida dentro da Proteção do Crepúsculo. Fazer isso vai revelar brevemente sua posição.",
+      "O Golpe dos Cinco Pontos de Akali é poderoso quando usado em alcance e Energia máxima. Inicie um confronto quando ela estiver com pouca Energia para maximizar suas chances de vencer trocas.",
+      "Retorne para a base se sua Vida estiver baixa e Akali tiver sua ultimate disponível."
+    ]
+  },
+  "166": {
+    "id": "Akshan",
+    "name": "Akshan",
+    "tags": [
+      "Marksman",
+      "Assassin"
+    ],
+    "attackrange": 500,
+    "key": "166",
+    "danger_tip": "Revive aliados e persegue kills; punição constante no mapa."
+  },
+  "12": {
+    "id": "Alistar",
+    "name": "Alistar",
+    "tags": [
+      "Tank",
+      "Support"
+    ],
+    "attackrange": 125,
+    "key": "12",
+    "danger_tip": "Inicia com controle pesado; difícil escapar depois que entra."
+  },
+  "799": {
+    "id": "Ambessa",
+    "name": "Ambessa",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "attackrange": 125,
+    "key": "799",
+    "danger_tip": "Avança com dano alto; troca curta e muito agressiva."
+  },
+  "32": {
+    "id": "Amumu",
+    "name": "Amumu",
+    "tags": [
+      "Tank",
+      "Support"
+    ],
+    "attackrange": 125,
+    "key": "32",
+    "danger_tip": "Ultimate prende vários; evite ficar agrupado na lane."
+  },
+  "34": {
+    "id": "Anivia",
+    "name": "Anivia",
+    "tags": [
+      "Mage"
+    ],
+    "attackrange": 600,
+    "key": "34",
+    "danger_tip": "Muro bloqueia rota; zona de dano castiga posição fixa.",
+    "enemy_tips": [
+      "Tente atacar Anivia em grupo quando ela estiver em sua rota. Com mais pessoas fica mais fácil assegurar que seu ovo morra.",
+      "Se você estiver jogando com um Campeão de ataque à distância, fique longe o suficiente de Anivia para poder se esquivar do Lampejo Gelado mais facilmente.",
+      "Tente lutar com Anivia nas rotas. Na selva ela pode bloquear os caminhos com níveis baixos de Cristalizar."
+    ]
+  },
+  "1": {
+    "id": "Annie",
+    "name": "Annie",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "attackrange": 625,
+    "key": "1",
+    "danger_tip": "Atordoamento instantâneo; burst aparece sem aviso."
+  },
+  "523": {
+    "id": "Aphelios",
+    "name": "Aphelios",
+    "tags": [
+      "Marksman"
+    ],
+    "attackrange": 550,
+    "key": "523",
+    "danger_tip": "Armas trocam o combate; respeite alcance e dano surpresa."
+  },
+  "22": {
+    "id": "Ashe",
+    "name": "Ashe",
+    "tags": [
+      "Marksman",
+      "Support"
+    ],
+    "attackrange": 600,
+    "key": "22",
+    "danger_tip": "Seta global avisa ganks; slow impede fugir na troca."
+  },
+  "136": {
+    "id": "AurelionSol",
+    "name": "Aurelion Sol",
+    "tags": [
+      "Mage"
+    ],
+    "attackrange": 550,
+    "key": "136",
+    "danger_tip": "Cresce com rotação; empurra e castiga avanço constante."
+  },
+  "893": {
+    "id": "Aurora",
+    "name": "Aurora",
+    "tags": [
+      "Mage",
+      "Assassin"
+    ],
+    "attackrange": 550,
+    "key": "893",
+    "danger_tip": "Entre mundos ela escapa; difícil prender e punir."
+  },
+  "268": {
+    "id": "Azir",
+    "name": "Azir",
+    "tags": [
+      "Mage",
+      "Marksman"
+    ],
+    "attackrange": 525,
+    "key": "268",
+    "danger_tip": "Soldados controlam espaço; avançar na lane é perigoso."
+  },
+  "432": {
+    "id": "Bard",
+    "name": "Bardo",
+    "tags": [
+      "Support",
+      "Mage"
+    ],
+    "attackrange": 500,
+    "key": "432",
+    "danger_tip": "Portal muda rotas; controle e burst surgem de ângulos estranhos."
+  },
+  "200": {
+    "id": "Belveth",
+    "name": "Bel'Veth",
+    "tags": [
+      "Fighter"
+    ],
+    "attackrange": 150,
+    "key": "200",
+    "danger_tip": "Escala rápido com objetivos; duelo prolongado favorece ela."
+  },
+  "53": {
+    "id": "Blitzcrank",
+    "name": "Blitzcrank",
+    "tags": [
+      "Tank",
+      "Support"
+    ],
+    "attackrange": 125,
+    "key": "53",
+    "danger_tip": "Um gancho acaba com sua distância segura."
+  },
+  "63": {
+    "id": "Brand",
+    "name": "Brand",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "attackrange": 550,
+    "key": "63",
+    "danger_tip": "Dano em área acumula; ficar perto de tropas piora tudo."
+  },
+  "201": {
+    "id": "Braum",
+    "name": "Braum",
+    "tags": [
+      "Tank",
+      "Support"
+    ],
+    "attackrange": 125,
+    "key": "201",
+    "danger_tip": "Escudo bloqueia dano chave; controle abre kill fácil."
+  },
+  "233": {
+    "id": "Briar",
+    "name": "Briar",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "attackrange": 125,
+    "key": "233",
+    "danger_tip": "Inicia de longe e força a luta na hora."
+  },
+  "51": {
+    "id": "Caitlyn",
+    "name": "Caitlyn",
+    "tags": [
+      "Marksman"
+    ],
+    "attackrange": 650,
+    "key": "51",
+    "danger_tip": "Rede e armadilha punem avanço; alcance domina a lane."
+  },
+  "164": {
+    "id": "Camille",
+    "name": "Camille",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "attackrange": 125,
+    "key": "164",
+    "danger_tip": "Grampo prende na parede; isolamento mata rápido."
+  },
+  "69": {
+    "id": "Cassiopeia",
+    "name": "Cassiopeia",
+    "tags": [
+      "Mage"
+    ],
+    "attackrange": 550,
+    "key": "69",
+    "danger_tip": "Veneno castiga troca longa; sem flash fica preso.",
+    "enemy_tips": [
+      "Cuidado com o potencial de dano de Cassiopeia com Presas Duplas quando caso esteja envenenado(a).",
+      "Não fique de frente para Cassiopeia quando ela conjurar Olhar Petrificador. Isso causará lentidão em vez de atordoamento."
+    ]
+  },
+  "31": {
+    "id": "Chogath",
+    "name": "Cho'Gath",
+    "tags": [
+      "Tank",
+      "Mage"
+    ],
+    "attackrange": 125,
+    "key": "31",
+    "danger_tip": "Executa com vida baixa; troca longa aumenta o risco."
+  },
+  "42": {
+    "id": "Corki",
+    "name": "Corki",
+    "tags": [
+      "Marksman",
+      "Mage"
+    ],
+    "attackrange": 550,
+    "key": "42",
+    "danger_tip": "Pacote quebra distância segura; poke constante de longe."
+  },
+  "122": {
+    "id": "Darius",
+    "name": "Darius",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "attackrange": 175,
+    "key": "122",
+    "danger_tip": "Sangramento força all-in; errar espaço custa a lane.",
+    "enemy_tips": [
+      "Quando o machado de Darius está em Tempo de Recarga, ele fica vulnerável a ataques agressivos.",
+      "A capacidade que Darius tem para escapar de confrontos é limitada. Se estiver em vantagem contra ele, pressione a investida."
+    ]
+  },
+  "131": {
+    "id": "Diana",
+    "name": "Diana",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "attackrange": 150,
+    "key": "131",
+    "danger_tip": "Entra com puxão e prende você no meio."
+  },
+  "119": {
+    "id": "Draven",
+    "name": "Draven",
+    "tags": [
+      "Marksman"
+    ],
+    "attackrange": 550,
+    "key": "119",
+    "danger_tip": "Machados recompensam pressão; troca curta explode se errar."
+  },
+  "36": {
+    "id": "DrMundo",
+    "name": "Dr. Mundo",
+    "tags": [
+      "Tank",
+      "Fighter"
+    ],
+    "attackrange": 125,
+    "key": "36",
+    "danger_tip": "Aguenta poke e volta; difícil finalizar sem burst."
+  },
+  "245": {
+    "id": "Ekko",
+    "name": "Ekko",
+    "tags": [
+      "Assassin",
+      "Mage"
+    ],
+    "attackrange": 125,
+    "key": "245",
+    "danger_tip": "Entra na troca e volta no tempo para sair ileso."
+  },
+  "60": {
+    "id": "Elise",
+    "name": "Elise",
+    "tags": [
+      "Assassin",
+      "Mage"
+    ],
+    "attackrange": 550,
+    "key": "60",
+    "danger_tip": "Transforma e dive cedo; punição forte antes do nível seis."
+  },
+  "28": {
+    "id": "Evelynn",
+    "name": "Evelynn",
+    "tags": [
+      "Assassin",
+      "Mage"
+    ],
+    "attackrange": 125,
+    "key": "28",
+    "danger_tip": "Invisível até perto; difícil prever a chegada."
+  },
+  "81": {
+    "id": "Ezreal",
+    "name": "Ezreal",
+    "tags": [
+      "Marksman",
+      "Mage"
+    ],
+    "attackrange": 550,
+    "key": "81",
+    "danger_tip": "Esquiva habilidades e pokeia; difícil castigar sem commit."
+  },
+  "9": {
+    "id": "Fiddlesticks",
+    "name": "Fiddlesticks",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "attackrange": 480,
+    "key": "9",
+    "danger_tip": "Ultimate de surpresa muda a troca; visão evita emboscada."
+  },
+  "114": {
+    "id": "Fiora",
+    "name": "Fiora",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "attackrange": 150,
+    "key": "114",
+    "danger_tip": "Riposte nega controle; duelo estendido favorece ela."
+  },
+  "105": {
+    "id": "Fizz",
+    "name": "Fizz",
+    "tags": [
+      "Assassin",
+      "Fighter"
+    ],
+    "attackrange": 175,
+    "key": "105",
+    "danger_tip": "Salta e fica invulnerável; pode ignorar sua zona e fechar o combo.",
+    "enemy_tips": [
+      "Os ataques de Fizz se tornam extremamente mortíferos por alguns segundos depois que ele usa seu ataque fortalecido – mantenha-o longe enquanto seu tridente estiver brilhando!",
+      "Fizz é um alvo evasivo quando suas habilidades não estão em Tempo de Recarga – faça com que ele as use rapidamente e dê sequência com ataques de Controle de Grupo ou que causem bastante dano!"
+    ]
+  },
+  "3": {
+    "id": "Galio",
+    "name": "Galio",
+    "tags": [
+      "Tank",
+      "Mage"
+    ],
+    "attackrange": 150,
+    "key": "3",
+    "danger_tip": "Dash global aparece na sua rota sem aviso."
+  },
+  "41": {
+    "id": "Gangplank",
+    "name": "Gangplank",
+    "tags": [
+      "Fighter"
+    ],
+    "attackrange": 125,
+    "key": "41",
+    "danger_tip": "Barril explode de longe; poke e zone controlam a lane.",
+    "enemy_tips": [
+      "Negociarrr causa uma boa quantia de Dano Físico. Itens que concedem Armadura podem ajudar caso um Gangplank inimigo esteja se saindo bem na partida.",
+      "Assim que Gangplank chega ao nível 6, cuidado com seu Ultimate de alcance global, a Barragem de Canhão!"
+    ]
+  },
+  "86": {
+    "id": "Garen",
+    "name": "Garen",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "attackrange": 175,
+    "key": "86",
+    "danger_tip": "Silencio e execução; troca curta castiga vida baixa."
+  },
+  "150": {
+    "id": "Gnar",
+    "name": "Gnar",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "attackrange": 175,
+    "key": "150",
+    "danger_tip": "Mega forma muda tudo; controle e dano surgem de repente."
+  },
+  "79": {
+    "id": "Gragas",
+    "name": "Gragas",
+    "tags": [
+      "Fighter",
+      "Mage"
+    ],
+    "attackrange": 125,
+    "key": "79",
+    "danger_tip": "Empurra e desloca; inicia ou salva a troca na hora."
+  },
+  "104": {
+    "id": "Graves",
+    "name": "Graves",
+    "tags": [
+      "Marksman"
+    ],
+    "attackrange": 425,
+    "key": "104",
+    "danger_tip": "Smoke e dash quebram visão; burst curto muito alto."
+  },
+  "887": {
+    "id": "Gwen",
+    "name": "Gwen",
+    "tags": [
+      "Fighter"
+    ],
+    "attackrange": 150,
+    "key": "887",
+    "danger_tip": "Névoa reduz dano; escala e ganha duelos prolongados."
+  },
+  "120": {
+    "id": "Hecarim",
+    "name": "Hecarim",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "attackrange": 175,
+    "key": "120",
+    "danger_tip": "Corre de longe e entra rápido; controle no caminho falha."
+  },
+  "74": {
+    "id": "Heimerdinger",
+    "name": "Heimerdinger",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "attackrange": 550,
+    "key": "74",
+    "danger_tip": "Torretas dominam espaço; avançar sem tropas é suicídio."
+  },
+  "910": {
+    "id": "Hwei",
+    "name": "Hwei",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "attackrange": 550,
+    "key": "910",
+    "danger_tip": "Combo longo de longe; posição aberta vira burst garantido.",
+    "enemy_tips": [
+      "Hwei precisa prever seu posicionamento e leva tempo para conjurar. Pegue ele de surpresa!",
+      "O raio de Hwei é mortal, mas lento, além de causar mais dano quando você está sozinho ou incapaz de se mover.",
+      "Depois que Hwei pinta Tormento, ele fica vulnerável a iniciações."
+    ]
+  },
+  "420": {
+    "id": "Illaoi",
+    "name": "Illaoi",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "attackrange": 125,
+    "key": "420",
+    "danger_tip": "Tentáculos castigam troca; luta perto de estrutura piora."
+  },
+  "39": {
+    "id": "Irelia",
+    "name": "Irelia",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "attackrange": 200,
+    "key": "39",
+    "danger_tip": "Usa tropas para fechar distância rápido."
+  },
+  "427": {
+    "id": "Ivern",
+    "name": "Ivern",
+    "tags": [
+      "Support",
+      "Mage"
+    ],
+    "attackrange": 475,
+    "key": "427",
+    "danger_tip": "Escudo e arbusto mudam chase; gank combinado é imprevisível."
+  },
+  "40": {
+    "id": "Janna",
+    "name": "Janna",
+    "tags": [
+      "Support",
+      "Mage"
+    ],
+    "attackrange": 550,
+    "key": "40",
+    "danger_tip": "Tornado e escudo negam all-in; difícil matar na lane."
+  },
+  "59": {
+    "id": "JarvanIV",
+    "name": "Jarvan IV",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "attackrange": 175,
+    "key": "59",
+    "danger_tip": "Engloba com terreno; sem flash a troca acaba ali."
+  },
+  "24": {
+    "id": "Jax",
+    "name": "Jax",
+    "tags": [
+      "Fighter"
+    ],
+    "attackrange": 125,
+    "key": "24",
+    "danger_tip": "Pula e escala; troca longa favorece ele demais."
+  },
+  "126": {
+    "id": "Jayce",
+    "name": "Jayce",
+    "tags": [
+      "Fighter",
+      "Marksman"
+    ],
+    "attackrange": 125,
+    "key": "126",
+    "danger_tip": "Troca forma e pokeia; pressão de alcance o tempo todo."
+  },
+  "202": {
+    "id": "Jhin",
+    "name": "Jhin",
+    "tags": [
+      "Marksman",
+      "Mage"
+    ],
+    "attackrange": 550,
+    "key": "202",
+    "danger_tip": "Quarta bala executa; posição fixa vira armadilha mortal."
+  },
+  "222": {
+    "id": "Jinx",
+    "name": "Jinx",
+    "tags": [
+      "Marksman"
+    ],
+    "attackrange": 525,
+    "key": "222",
+    "danger_tip": "Foguete pega de longe; reset muda a troca inteira."
+  },
+  "145": {
+    "id": "Kaisa",
+    "name": "Kai'Sa",
+    "tags": [
+      "Marksman",
+      "Mage"
+    ],
+    "attackrange": 525,
+    "key": "145",
+    "danger_tip": "Evolui e entra no backline; burst aparece de repente."
+  },
+  "429": {
+    "id": "Kalista",
+    "name": "Kalista",
+    "tags": [
+      "Marksman"
+    ],
+    "attackrange": 525,
+    "key": "429",
+    "danger_tip": "Pula tropas e kiting; difícil acertar controle direto."
+  },
+  "43": {
+    "id": "Karma",
+    "name": "Karma",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "attackrange": 525,
+    "key": "43",
+    "danger_tip": "Escudo e slow negam troca; poke constante na lane."
+  },
+  "30": {
+    "id": "Karthus",
+    "name": "Karthus",
+    "tags": [
+      "Mage"
+    ],
+    "attackrange": 450,
+    "key": "30",
+    "danger_tip": "Ultimate global castiga vida baixa em qualquer lugar."
+  },
+  "38": {
+    "id": "Kassadin",
+    "name": "Kassadin",
+    "tags": [
+      "Assassin",
+      "Mage"
+    ],
+    "attackrange": 150,
+    "key": "38",
+    "danger_tip": "Pula por cima da sua zona e chega de surpresa.",
+    "enemy_tips": [
+      "A maior parte do dano que Kassadin causa é mágico. Se ele estiver com bom desempenho, tente comprar itens de Resistência Mágica, como Passos de Mercúrio e Véu da Banshee.",
+      "Kassadin gasta mais Mana a cada vez consecutiva que usa Caminhar na Fenda. Tenha isso em mente quando o estiver perseguindo.",
+      "Ele precisa usar 6 habilidades para que Força de Pulso, sua habilidade de lentidão, fique disponível. Caso aumente o nível dessa habilidade, tenha cautela ao usar suas habilidades contra ele."
+    ]
+  },
+  "55": {
+    "id": "Katarina",
+    "name": "Katarina",
+    "tags": [
+      "Assassin",
+      "Mage"
+    ],
+    "attackrange": 125,
+    "key": "55",
+    "danger_tip": "Pula entre alvos; qualquer erro vira reset mortal."
+  },
+  "10": {
+    "id": "Kayle",
+    "name": "Kayle",
+    "tags": [
+      "Mage",
+      "Marksman"
+    ],
+    "attackrange": 175,
+    "key": "10",
+    "danger_tip": "Escala muito; depois do mid game ela domina duelos."
+  },
+  "141": {
+    "id": "Kayn",
+    "name": "Kayn",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "attackrange": 175,
+    "key": "141",
+    "danger_tip": "Atravessa parede e surpreende; forma escolhida muda o perigo."
+  },
+  "85": {
+    "id": "Kennen",
+    "name": "Kennen",
+    "tags": [
+      "Mage"
+    ],
+    "attackrange": 550,
+    "key": "85",
+    "danger_tip": "Ultimate em área stun; all-in agrupado é devastador."
+  },
+  "121": {
+    "id": "Khazix",
+    "name": "Kha'Zix",
+    "tags": [
+      "Assassin"
+    ],
+    "attackrange": 125,
+    "key": "121",
+    "danger_tip": "Isolado você morre; evite ficar sozinho na troca."
+  },
+  "203": {
+    "id": "Kindred",
+    "name": "Kindred",
+    "tags": [
+      "Marksman"
+    ],
+    "attackrange": 500,
+    "key": "203",
+    "danger_tip": "Marca força duelo; ultimate salva ela no limite."
+  },
+  "240": {
+    "id": "Kled",
+    "name": "Kled",
+    "tags": [
+      "Fighter"
+    ],
+    "attackrange": 125,
+    "key": "240",
+    "danger_tip": "Recupera montaria e volta agressivo; troca errada continua."
+  },
+  "96": {
+    "id": "KogMaw",
+    "name": "Kog'Maw",
+    "tags": [
+      "Marksman",
+      "Mage"
+    ],
+    "attackrange": 500,
+    "key": "96",
+    "danger_tip": "Dano verdadeiro escala; protegido ele derrete qualquer um."
+  },
+  "897": {
+    "id": "KSante",
+    "name": "K'Sante",
+    "tags": [
+      "Tank",
+      "Fighter"
+    ],
+    "attackrange": 150,
+    "key": "897",
+    "danger_tip": "Ultimate isola e troca vida; duelo vira desvantagem rápido."
+  },
+  "7": {
+    "id": "Leblanc",
+    "name": "LeBlanc",
+    "tags": [
+      "Assassin",
+      "Mage"
+    ],
+    "attackrange": 525,
+    "key": "7",
+    "danger_tip": "Entra, explode o dano e some antes de você reagir."
+  },
+  "64": {
+    "id": "LeeSin",
+    "name": "Lee Sin",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "attackrange": 125,
+    "key": "64",
+    "danger_tip": "Inicia de ângulo e chuta; erro de posição vira pick."
+  },
+  "89": {
+    "id": "Leona",
+    "name": "Leona",
+    "tags": [
+      "Tank",
+      "Support"
+    ],
+    "attackrange": 125,
+    "key": "89",
+    "danger_tip": "Se ela entrar, você quase não joga a lane.",
+    "enemy_tips": [
+      "Quando Leona ativa o Eclipse, você tem três segundos para se afastar dela antes que ela cause dano.",
+      "Apenas adversários no centro da Labareda Solar ficam atordoados, então se você for rápido, poderá evitar isto muitas vezes."
+    ]
+  },
+  "876": {
+    "id": "Lillia",
+    "name": "Lillia",
+    "tags": [
+      "Fighter",
+      "Mage"
+    ],
+    "attackrange": 325,
+    "key": "876",
+    "danger_tip": "Sono em área muda teamfight; não fique parado na troca."
+  },
+  "127": {
+    "id": "Lissandra",
+    "name": "Lissandra",
+    "tags": [
+      "Mage"
+    ],
+    "attackrange": 550,
+    "key": "127",
+    "danger_tip": "Gelo prende e salva ela; burst com controle garantido."
+  },
+  "805": {
+    "id": "Locke",
+    "name": "Locke",
+    "tags": [
+      "Assassin",
+      "Mage"
+    ],
+    "attackrange": 125,
+    "key": "805",
+    "danger_tip": "Controle pesado e burst; troca curta favorece ela."
+  },
+  "236": {
+    "id": "Lucian",
+    "name": "Lucian",
+    "tags": [
+      "Marksman",
+      "Assassin"
+    ],
+    "attackrange": 500,
+    "key": "236",
+    "danger_tip": "Combo rápido e mobilidade; troca curta castiga hesitação."
+  },
+  "117": {
+    "id": "Lulu",
+    "name": "Lulu",
+    "tags": [
+      "Support",
+      "Mage"
+    ],
+    "attackrange": 550,
+    "key": "117",
+    "danger_tip": "Polimorfia e escudo negam kill; difícil finalizar all-in."
+  },
+  "99": {
+    "id": "Lux",
+    "name": "Lux",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "attackrange": 550,
+    "key": "99",
+    "danger_tip": "Prende de longe e pune posicionamento aberto."
+  },
+  "54": {
+    "id": "Malphite",
+    "name": "Malphite",
+    "tags": [
+      "Tank",
+      "Mage"
+    ],
+    "attackrange": 125,
+    "key": "54",
+    "danger_tip": "Ultimate de área inicia do nada; cuidado agrupado."
+  },
+  "90": {
+    "id": "Malzahar",
+    "name": "Malzahar",
+    "tags": [
+      "Mage"
+    ],
+    "attackrange": 500,
+    "key": "90",
+    "danger_tip": "Prende no lugar e impede qualquer resposta."
+  },
+  "57": {
+    "id": "Maokai",
+    "name": "Maokai",
+    "tags": [
+      "Tank",
+      "Support"
+    ],
+    "attackrange": 125,
+    "key": "57",
+    "danger_tip": "Regenera e prende; troca longa na lane favorece ele."
+  },
+  "11": {
+    "id": "MasterYi",
+    "name": "Master Yi",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "attackrange": 175,
+    "key": "11",
+    "danger_tip": "Imune a slow e acelera; reset mata quem sobrou."
+  },
+  "800": {
+    "id": "Mel",
+    "name": "Mel",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "attackrange": 550,
+    "key": "800",
+    "danger_tip": "Reflete habilidades; poke e burst podem virar contra você.",
+    "enemy_tips": [
+      "Mel pode refletir projéteis inimigos, incluindo habilidades poderosas. Espere até que ela conjure Refutação antes de disparar seus projéteis mais fortes na direção dela.",
+      "Quanto mais Mel atingir você, mais acúmulos de Deslumbrar ela aplicará. Se sua Vida ficar baixa demais, o próximo acerto dela executará você, então melhor se afastar por alguns segundos até que os acúmulos de Deslumbrar expirem."
+    ]
+  },
+  "902": {
+    "id": "Milio",
+    "name": "Milio",
+    "tags": [
+      "Support",
+      "Mage"
+    ],
+    "attackrange": 525,
+    "key": "902",
+    "danger_tip": "Cura e escudo prolongam troca; difícil finalizar kill."
+  },
+  "21": {
+    "id": "MissFortune",
+    "name": "Miss Fortune",
+    "tags": [
+      "Marksman",
+      "Mage"
+    ],
+    "attackrange": 550,
+    "key": "21",
+    "danger_tip": "Chuva de balas castiga posição parada; slow zoneia."
+  },
+  "62": {
+    "id": "MonkeyKing",
+    "name": "Wukong",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "attackrange": 175,
+    "key": "62",
+    "danger_tip": "Clone confunde e entra; difícil saber onde acertar."
+  },
+  "82": {
+    "id": "Mordekaiser",
+    "name": "Mordekaiser",
+    "tags": [
+      "Fighter",
+      "Mage"
+    ],
+    "attackrange": 175,
+    "key": "82",
+    "danger_tip": "Ultimate isola em duelo; ajuda externa some na hora."
+  },
+  "25": {
+    "id": "Morgana",
+    "name": "Morgana",
+    "tags": [
+      "Support",
+      "Mage"
+    ],
+    "attackrange": 450,
+    "key": "25",
+    "danger_tip": "Prende no chão; difícil escapar depois.",
+    "enemy_tips": [
+      "Sombra Atormentada causa toneladas de dano a unidades com muita Vida perdida. Quando estiver com pouca Vida, cuidado com as tentativas de Morgana de aprisionar você.",
+      "Morgana frequentemente precisa acertar sua Ligação das Trevas para preparar seus outros ataques. Use as tropas como escudo para evitar a habilidade.",
+      "Escudo Negro torna Morgana imune a efeitos de desarme, mas pode ser quebrado com Dano Mágico."
+    ]
+  },
+  "950": {
+    "id": "Naafiri",
+    "name": "Naafiri",
+    "tags": [
+      "Assassin",
+      "Fighter"
+    ],
+    "attackrange": 125,
+    "key": "950",
+    "danger_tip": "Avanços seguidos quebram a distância segura."
+  },
+  "267": {
+    "id": "Nami",
+    "name": "Nami",
+    "tags": [
+      "Support",
+      "Mage"
+    ],
+    "attackrange": 550,
+    "key": "267",
+    "danger_tip": "Onda e cura viram troca; all-in demora e ela vira."
+  },
+  "75": {
+    "id": "Nasus",
+    "name": "Nasus",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "attackrange": 125,
+    "key": "75",
+    "danger_tip": "Acumula dano na rota; deixar farmar cobra caro depois."
+  },
+  "111": {
+    "id": "Nautilus",
+    "name": "Nautilus",
+    "tags": [
+      "Tank",
+      "Support"
+    ],
+    "attackrange": 175,
+    "key": "111",
+    "danger_tip": "Muito controle; difícil sair depois que prende."
+  },
+  "518": {
+    "id": "Neeko",
+    "name": "Neeko",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "attackrange": 550,
+    "key": "518",
+    "danger_tip": "Disfarce engana rota; controle surpresa abre kill fácil."
+  },
+  "76": {
+    "id": "Nidalee",
+    "name": "Nidalee",
+    "tags": [
+      "Assassin",
+      "Mage"
+    ],
+    "attackrange": 525,
+    "key": "76",
+    "danger_tip": "Lança de longe e pula; poke e chase punem erro."
+  },
+  "895": {
+    "id": "Nilah",
+    "name": "Nilah",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "attackrange": 225,
+    "key": "895",
+    "danger_tip": "Encanta e empurra; burst curto com mobilidade alta."
+  },
+  "56": {
+    "id": "Nocturne",
+    "name": "Nocturne",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "attackrange": 125,
+    "key": "56",
+    "danger_tip": "Apaga a visão e chega em você sem aviso."
+  },
+  "20": {
+    "id": "Nunu",
+    "name": "Nunu e Willump",
+    "tags": [
+      "Tank",
+      "Mage"
+    ],
+    "attackrange": 125,
+    "key": "20",
+    "danger_tip": "Bola desce rápido e stun; gank combinado é letal.",
+    "enemy_tips": [
+      "Interromper o carregamento de Zero Absoluto reduzirá a quantidade de dano que sua equipe recebe.",
+      "Usar o Flash é uma maneira bem segura de escapar do Zero Absoluto.",
+      "A Maior Bola de Neve de Todas move-se muito rapidamente, mas não faz curvas tão rápido assim, então não tente fugir dela em linha reta. Em vez disso, faça curvas fechadas e repentinas."
+    ]
+  },
+  "2": {
+    "id": "Olaf",
+    "name": "Olaf",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "attackrange": 125,
+    "key": "2",
+    "danger_tip": "Imune a controle no ult; troca all-in quase sempre."
+  },
+  "61": {
+    "id": "Orianna",
+    "name": "Orianna",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "attackrange": 525,
+    "key": "61",
+    "danger_tip": "Bola controla zona; ultimate puxa e mata agrupados."
+  },
+  "516": {
+    "id": "Ornn",
+    "name": "Ornn",
+    "tags": [
+      "Tank"
+    ],
+    "attackrange": 175,
+    "key": "516",
+    "danger_tip": "Controle e britabilidade; troca longa aumenta dano dele."
+  },
+  "80": {
+    "id": "Pantheon",
+    "name": "Pantheon",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "attackrange": 175,
+    "key": "80",
+    "danger_tip": "Escudo bloqueia e salta; all-in cedo e global depois."
+  },
+  "78": {
+    "id": "Poppy",
+    "name": "Poppy",
+    "tags": [
+      "Tank",
+      "Fighter"
+    ],
+    "attackrange": 125,
+    "key": "78",
+    "danger_tip": "Parede nega dash; controle impede fugir na troca."
+  },
+  "555": {
+    "id": "Pyke",
+    "name": "Pyke",
+    "tags": [
+      "Support",
+      "Assassin"
+    ],
+    "attackrange": 150,
+    "key": "555",
+    "danger_tip": "Pressiona execução; vida baixa vira morte."
+  },
+  "246": {
+    "id": "Qiyana",
+    "name": "Qiyana",
+    "tags": [
+      "Assassin"
+    ],
+    "attackrange": 150,
+    "key": "246",
+    "danger_tip": "Usa terreno para stun; flanco mata antes de reagir."
+  },
+  "133": {
+    "id": "Quinn",
+    "name": "Quinn",
+    "tags": [
+      "Marksman",
+      "Assassin"
+    ],
+    "attackrange": 525,
+    "key": "133",
+    "danger_tip": "Cega e acelera; kite constante quebra seu all-in."
+  },
+  "497": {
+    "id": "Rakan",
+    "name": "Rakan",
+    "tags": [
+      "Support"
+    ],
+    "attackrange": 300,
+    "key": "497",
+    "danger_tip": "Inicia rápido demais para reagir a tempo."
+  },
+  "33": {
+    "id": "Rammus",
+    "name": "Rammus",
+    "tags": [
+      "Tank"
+    ],
+    "attackrange": 125,
+    "key": "33",
+    "danger_tip": "Rola e taunta; engajou nele e a troca virou."
+  },
+  "421": {
+    "id": "RekSai",
+    "name": "Rek'Sai",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "attackrange": 175,
+    "key": "421",
+    "danger_tip": "Surfa sob o mapa; chegada por baixo sem aviso."
+  },
+  "526": {
+    "id": "Rell",
+    "name": "Rell",
+    "tags": [
+      "Tank",
+      "Support"
+    ],
+    "attackrange": 175,
+    "key": "526",
+    "danger_tip": "Monta e engloba; controle em área abre kill instantâneo."
+  },
+  "888": {
+    "id": "Renata",
+    "name": "Renata Glasc",
+    "tags": [
+      "Support",
+      "Mage"
+    ],
+    "attackrange": 550,
+    "key": "888",
+    "danger_tip": "Revive aliado e buffa dano; troca estendida perigosa."
+  },
+  "58": {
+    "id": "Renekton",
+    "name": "Renekton",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "attackrange": 125,
+    "key": "58",
+    "danger_tip": "Fúria explode cedo; all-in antes do nível seis."
+  },
+  "107": {
+    "id": "Rengar",
+    "name": "Rengar",
+    "tags": [
+      "Assassin",
+      "Fighter"
+    ],
+    "attackrange": 125,
+    "key": "107",
+    "danger_tip": "Salta de longe antes de você se posicionar."
+  },
+  "92": {
+    "id": "Riven",
+    "name": "Riven",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "attackrange": 125,
+    "key": "92",
+    "danger_tip": "Combo rápido e mobilidade; erro de distância mata."
+  },
+  "68": {
+    "id": "Rumble",
+    "name": "Rumble",
+    "tags": [
+      "Fighter",
+      "Mage"
+    ],
+    "attackrange": 125,
+    "key": "68",
+    "danger_tip": "Zona quente castiga avanço; ultimate cobre rota inteira."
+  },
+  "13": {
+    "id": "Ryze",
+    "name": "Ryze",
+    "tags": [
+      "Mage"
+    ],
+    "attackrange": 550,
+    "key": "13",
+    "danger_tip": "Prisão e burst; rotação de habilidades castiga parado."
+  },
+  "360": {
+    "id": "Samira",
+    "name": "Samira",
+    "tags": [
+      "Marksman",
+      "Assassin"
+    ],
+    "attackrange": 500,
+    "key": "360",
+    "danger_tip": "Estilo acumula e reseta; all-in prolongado favorece ela."
+  },
+  "113": {
+    "id": "Sejuani",
+    "name": "Sejuani",
+    "tags": [
+      "Tank"
+    ],
+    "attackrange": 150,
+    "key": "113",
+    "danger_tip": "Stun em cadeia; controle pesado abre pick fácil."
+  },
+  "235": {
+    "id": "Senna",
+    "name": "Senna",
+    "tags": [
+      "Support",
+      "Marksman"
+    ],
+    "attackrange": 600,
+    "key": "235",
+    "danger_tip": "Alcance cresce; slow global e cura mudam a troca."
+  },
+  "147": {
+    "id": "Seraphine",
+    "name": "Seraphine",
+    "tags": [
+      "Support",
+      "Mage"
+    ],
+    "attackrange": 525,
+    "key": "147",
+    "danger_tip": "Encanto em área e cura; poke longo castiga posição."
+  },
+  "875": {
+    "id": "Sett",
+    "name": "Sett",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "attackrange": 125,
+    "key": "875",
+    "danger_tip": "Pega e estoura no meio; troca curta explode dano."
+  },
+  "35": {
+    "id": "Shaco",
+    "name": "Shaco",
+    "tags": [
+      "Assassin"
+    ],
+    "attackrange": 125,
+    "key": "35",
+    "danger_tip": "Aparece de surpresa; o clone confunde sua reação."
+  },
+  "98": {
+    "id": "Shen",
+    "name": "Shen",
+    "tags": [
+      "Tank"
+    ],
+    "attackrange": 125,
+    "key": "98",
+    "danger_tip": "Escudo e ultimate global; dive na rota sem aviso."
+  },
+  "102": {
+    "id": "Shyvana",
+    "name": "Shyvana",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "attackrange": 150,
+    "key": "102",
+    "danger_tip": "Transforma e queima; troca prolongada favorece ela."
+  },
+  "27": {
+    "id": "Singed",
+    "name": "Singed",
+    "tags": [
+      "Tank",
+      "Mage"
+    ],
+    "attackrange": 125,
+    "key": "27",
+    "danger_tip": "Veneno e empurra; perseguir ele costuma dar errado."
+  },
+  "14": {
+    "id": "Sion",
+    "name": "Sion",
+    "tags": [
+      "Tank",
+      "Fighter"
+    ],
+    "attackrange": 175,
+    "key": "14",
+    "danger_tip": "Passivo e tank; troca longa e estrutura ameaçam base."
+  },
+  "15": {
+    "id": "Sivir",
+    "name": "Sivir",
+    "tags": [
+      "Marksman"
+    ],
+    "attackrange": 500,
+    "key": "15",
+    "danger_tip": "Escudo bloqueia controle; push rápido e poke na rota."
+  },
+  "72": {
+    "id": "Skarner",
+    "name": "Skarner",
+    "tags": [
+      "Tank",
+      "Fighter"
+    ],
+    "attackrange": 150,
+    "key": "72",
+    "danger_tip": "Puxa e suprime; isolado você não joga a troca."
+  },
+  "901": {
+    "id": "Smolder",
+    "name": "Smolder",
+    "tags": [
+      "Marksman",
+      "Mage"
+    ],
+    "attackrange": 550,
+    "key": "901",
+    "danger_tip": "Escala com stacks; poke e burn castigam troca longa."
+  },
+  "37": {
+    "id": "Sona",
+    "name": "Sona",
+    "tags": [
+      "Support",
+      "Mage"
+    ],
+    "attackrange": 550,
+    "key": "37",
+    "danger_tip": "Cura e acelera; poke constante desgasta sem all-in."
+  },
+  "16": {
+    "id": "Soraka",
+    "name": "Soraka",
+    "tags": [
+      "Support",
+      "Mage"
+    ],
+    "attackrange": 550,
+    "key": "16",
+    "danger_tip": "Cura global; focar errado deixa ela salvar a troca."
+  },
+  "50": {
+    "id": "Swain",
+    "name": "Swain",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "attackrange": 525,
+    "key": "50",
+    "danger_tip": "Puxão e drain; troca prolongada cura e domina."
+  },
+  "517": {
+    "id": "Sylas",
+    "name": "Sylas",
+    "tags": [
+      "Mage",
+      "Assassin"
+    ],
+    "attackrange": 175,
+    "key": "517",
+    "danger_tip": "Rouba ultimate; combo adaptável surpreende na troca."
+  },
+  "134": {
+    "id": "Syndra",
+    "name": "Syndra",
+    "tags": [
+      "Mage"
+    ],
+    "attackrange": 550,
+    "key": "134",
+    "danger_tip": "Empurra e mata de longe antes de você reagir."
+  },
+  "223": {
+    "id": "TahmKench",
+    "name": "Tahm Kench",
+    "tags": [
+      "Tank",
+      "Support"
+    ],
+    "attackrange": 175,
+    "key": "223",
+    "danger_tip": "Engole e isola; salva aliado ou remove você da luta."
+  },
+  "163": {
+    "id": "Taliyah",
+    "name": "Taliyah",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "attackrange": 525,
+    "key": "163",
+    "danger_tip": "Muro e deslize; rotação rápida surpreende na lane."
+  },
+  "91": {
+    "id": "Talon",
+    "name": "Talon",
+    "tags": [
+      "Assassin"
+    ],
+    "attackrange": 125,
+    "key": "91",
+    "danger_tip": "Chega por flanco, fora da sua linha de visão."
+  },
+  "44": {
+    "id": "Taric",
+    "name": "Taric",
+    "tags": [
+      "Support",
+      "Tank"
+    ],
+    "attackrange": 150,
+    "key": "44",
+    "danger_tip": "Stun em área e invulnerável; all-in agrupado falha."
+  },
+  "17": {
+    "id": "Teemo",
+    "name": "Teemo",
+    "tags": [
+      "Marksman",
+      "Mage"
+    ],
+    "attackrange": 500,
+    "key": "17",
+    "danger_tip": "Armadilhas e veneno; controle de visão castiga rota."
+  },
+  "412": {
+    "id": "Thresh",
+    "name": "Thresh",
+    "tags": [
+      "Support",
+      "Tank"
+    ],
+    "attackrange": 450,
+    "key": "412",
+    "danger_tip": "Gancho abre espaço para burst instantâneo."
+  },
+  "18": {
+    "id": "Tristana",
+    "name": "Tristana",
+    "tags": [
+      "Marksman",
+      "Assassin"
+    ],
+    "attackrange": 550,
+    "key": "18",
+    "danger_tip": "Salta e explode; all-in cedo com reset de salto."
+  },
+  "48": {
+    "id": "Trundle",
+    "name": "Trundle",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "attackrange": 175,
+    "key": "48",
+    "danger_tip": "Pilar bloqueia e rouba stats; duelo estendido favorece."
+  },
+  "23": {
+    "id": "Tryndamere",
+    "name": "Tryndamere",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "attackrange": 175,
+    "key": "23",
+    "danger_tip": "Imortal no limite; troca longa vira all-in dele."
+  },
+  "4": {
+    "id": "TwistedFate",
+    "name": "Twisted Fate",
+    "tags": [
+      "Mage",
+      "Marksman"
+    ],
+    "attackrange": 525,
+    "key": "4",
+    "danger_tip": "Carta amarela stun; ultimate global aparece na rota."
+  },
+  "29": {
+    "id": "Twitch",
+    "name": "Twitch",
+    "tags": [
+      "Marksman",
+      "Assassin"
+    ],
+    "attackrange": 550,
+    "key": "29",
+    "danger_tip": "Invisível na rota; burst de área surpreende agrupado."
+  },
+  "77": {
+    "id": "Udyr",
+    "name": "Udyr",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "attackrange": 125,
+    "key": "77",
+    "danger_tip": "Corre e stun alternado; troca curta e perseguição forte."
+  },
+  "6": {
+    "id": "Urgot",
+    "name": "Urgot",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "attackrange": 350,
+    "key": "6",
+    "danger_tip": "Executa abaixo de certa vida; troca longa é armadilha."
+  },
+  "110": {
+    "id": "Varus",
+    "name": "Varus",
+    "tags": [
+      "Marksman",
+      "Mage"
+    ],
+    "attackrange": 575,
+    "key": "110",
+    "danger_tip": "Prisão e poke; acertar corrente abre burst garantido."
+  },
+  "67": {
+    "id": "Vayne",
+    "name": "Vayne",
+    "tags": [
+      "Marksman",
+      "Assassin"
+    ],
+    "attackrange": 550,
+    "key": "67",
+    "danger_tip": "Rola e dano verdadeiro; duelo longo favorece ela."
+  },
+  "45": {
+    "id": "Veigar",
+    "name": "Veigar",
+    "tags": [
+      "Mage"
+    ],
+    "attackrange": 550,
+    "key": "45",
+    "danger_tip": "Gaiola prende; stacks de dano castigam troca tardia.",
+    "enemy_tips": [
+      "Matéria Escura causa muito dano, mas pode ser evitada. Preste atenção no som e indicador visual para estar ciente de quando e onde a habilidade cairá.",
+      "Horizonte de Eventos atordoa somente em sua borda. Caso esteja dentro da habilidade, ainda poderá se movimentar e atacar.",
+      "A Ultimate de Veigar causa dano aumentado com base em sua Vida perdida."
+    ]
+  },
+  "161": {
+    "id": "Velkoz",
+    "name": "Vel'Koz",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "attackrange": 525,
+    "key": "161",
+    "danger_tip": "Dano alto à distância; respeite o espaço."
+  },
+  "711": {
+    "id": "Vex",
+    "name": "Vex",
+    "tags": [
+      "Mage"
+    ],
+    "attackrange": 550,
+    "key": "711",
+    "danger_tip": "Interrompe dash e burst; mobilidade contra ela é perigosa."
+  },
+  "254": {
+    "id": "Vi",
+    "name": "Vi",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "attackrange": 125,
+    "key": "254",
+    "danger_tip": "Corre até você ignorando controle no caminho."
+  },
+  "234": {
+    "id": "Viego",
+    "name": "Viego",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "attackrange": 200,
+    "key": "234",
+    "danger_tip": "Possui corpo; reset após kill muda a troca inteira."
+  },
+  "112": {
+    "id": "Viktor",
+    "name": "Viktor",
+    "tags": [
+      "Mage"
+    ],
+    "attackrange": 525,
+    "key": "112",
+    "danger_tip": "Zona e escala; poke constante domina a lane depois.",
+    "enemy_tips": [
+      "Muito cuidado com a distância que mantém de Viktor. Seu controle do campo de batalha aumenta conforme a proximidade que tiver de seu oponente.",
+      "Fique de olho em quantos aprimoramentos Viktor tiver finalizado através da cor da luz de seu cajado (roxa, amarela, azul e vermelha)."
+    ]
+  },
+  "8": {
+    "id": "Vladimir",
+    "name": "Vladimir",
+    "tags": [
+      "Mage",
+      "Fighter"
+    ],
+    "attackrange": 450,
+    "key": "8",
+    "danger_tip": "Pool evita controle; escala e ganha troca prolongada."
+  },
+  "106": {
+    "id": "Volibear",
+    "name": "Volibear",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "attackrange": 150,
+    "key": "106",
+    "danger_tip": "Stun e dive; troca curta com sustain alto."
+  },
+  "19": {
+    "id": "Warwick",
+    "name": "Warwick",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "attackrange": 125,
+    "key": "19",
+    "danger_tip": "Corre com sangue baixo; fear no meio mata isolado."
+  },
+  "498": {
+    "id": "Xayah",
+    "name": "Xayah",
+    "tags": [
+      "Marksman"
+    ],
+    "attackrange": 525,
+    "key": "498",
+    "danger_tip": "Plumas e ultimate invulnerável; kite e burst na troca."
+  },
+  "101": {
+    "id": "Xerath",
+    "name": "Xerath",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "attackrange": 525,
+    "key": "101",
+    "danger_tip": "Ataca de muito longe, fora do seu alcance.",
+    "enemy_tips": [
+      "O alcance de Xerath pode ser intimidante, mas a maioria dos campeões que o enfrentam de perto conseguem bons resultados na troca de dano.",
+      "Xerath leva muito tempo para engajar com Ritual Arcano. Tenha atenção em sua animação de conjuração e comece a desviar.",
+      "O Véu da Banshee faz com que seja muito mais difícil para Xerath acertar Orbe Eletrizante em você."
+    ]
+  },
+  "5": {
+    "id": "XinZhao",
+    "name": "Xin Zhao",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "attackrange": 175,
+    "key": "5",
+    "danger_tip": "Triplo hit e knockup; all-in direto castiga espaço curto."
+  },
+  "157": {
+    "id": "Yasuo",
+    "name": "Yasuo",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "attackrange": 175,
+    "key": "157",
+    "danger_tip": "Parede bloqueia projéteis; tornado e dash punem erro.",
+    "enemy_tips": [
+      "Tempestade de Aço é muito estreita. Desvie lateralmente. ",
+      "Quando Yasuo acerta duas Tempestades de Aço em sequência, seu próximo uso enviará um tornado. Atenção ao efeito visual e sonoro dele, prepare-se para desviar.",
+      "O momento mais fraco de Yasuo é logo após desferir seu tornado. Enfrente-o neste momento.",
+      "O escudo de 'Decisão' de Yasuo dura só 2 segundos. Cause dano a ele para ativar a proteção. Ataque quando o efeito acabar."
+    ]
+  },
+  "777": {
+    "id": "Yone",
+    "name": "Yone",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "attackrange": 175,
+    "key": "777",
+    "danger_tip": "Entra e sai da troca atravessando sua zona segura."
+  },
+  "83": {
+    "id": "Yorick",
+    "name": "Yorick",
+    "tags": [
+      "Fighter",
+      "Tank"
+    ],
+    "attackrange": 175,
+    "key": "83",
+    "danger_tip": "Muro e ghoul; pressão constante e split perigoso."
+  },
+  "804": {
+    "id": "Yunara",
+    "name": "Yunara",
+    "tags": [
+      "Marksman"
+    ],
+    "attackrange": 575,
+    "key": "804",
+    "danger_tip": "Mobilidade e burst; troca rápida castiga hesitação."
+  },
+  "350": {
+    "id": "Yuumi",
+    "name": "Yuumi",
+    "tags": [
+      "Support",
+      "Mage"
+    ],
+    "attackrange": 425,
+    "key": "350",
+    "danger_tip": "Anexada cura dano; difícil focar sem controle de área."
+  },
+  "904": {
+    "id": "Zaahen",
+    "name": "Zaahen",
+    "tags": [
+      "Fighter",
+      "Assassin"
+    ],
+    "attackrange": 175,
+    "key": "904",
+    "danger_tip": "Dash e burst; troca curta com dano alto concentrado."
+  },
+  "154": {
+    "id": "Zac",
+    "name": "Zac",
+    "tags": [
+      "Tank",
+      "Fighter"
+    ],
+    "attackrange": 175,
+    "key": "154",
+    "danger_tip": "Salta de longe e engloba; chegada imprevisível na rota."
+  },
+  "238": {
+    "id": "Zed",
+    "name": "Zed",
+    "tags": [
+      "Assassin"
+    ],
+    "attackrange": 125,
+    "key": "238",
+    "danger_tip": "Marca você, entra e some antes de você punir.",
+    "enemy_tips": [
+      "Zed recebe efeitos adicionais de itens de Dano de Ataque que comprar, então itens de Armadura são super efetivos contra ele.",
+      "Zed fica mais vulnerável após usar sua Sombra Viva, pois seu dano, redução de velocidade e mobilidade dependem dela.",
+      "O Corte Sombrio de Zed só reduz sua velocidade se a sombra dele lhe atingir."
+    ]
+  },
+  "221": {
+    "id": "Zeri",
+    "name": "Zeri",
+    "tags": [
+      "Marksman"
+    ],
+    "attackrange": 550,
+    "key": "221",
+    "danger_tip": "Dash constante e dano contínuo; difícil acertar controle."
+  },
+  "115": {
+    "id": "Ziggs",
+    "name": "Ziggs",
+    "tags": [
+      "Mage"
+    ],
+    "attackrange": 550,
+    "key": "115",
+    "danger_tip": "Poke de longe e demolish; pressiona torre sem se expor."
+  },
+  "26": {
+    "id": "Zilean",
+    "name": "Zilean",
+    "tags": [
+      "Support",
+      "Mage"
+    ],
+    "attackrange": 550,
+    "key": "26",
+    "danger_tip": "Bomba e revive; troca estendida vira duas vidas.",
+    "enemy_tips": [
+      "Às vezes é bom, caso você consiga acompanhar a velocidade de Zilean, aguardar até que o efeito de seu Ultimate tenha acabado antes de dar o golpe final.",
+      "Zilean é frágil se a equipe toda se concentrar nele, mas é muito difícil de matar caso contrário. Combine com sua equipe para abatê-lo."
+    ]
+  },
+  "142": {
+    "id": "Zoe",
+    "name": "Zoe",
+    "tags": [
+      "Mage"
+    ],
+    "attackrange": 550,
+    "key": "142",
+    "danger_tip": "Se a bolha acertar, o burst é quase garantido."
+  },
+  "143": {
+    "id": "Zyra",
+    "name": "Zyra",
+    "tags": [
+      "Mage",
+      "Support"
+    ],
+    "attackrange": 575,
+    "key": "143",
+    "danger_tip": "Plantas zoneiam; ficar parado na lane é castigo."
+  }
+}

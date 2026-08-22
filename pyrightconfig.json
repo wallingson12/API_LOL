@@ -1,0 +1,9 @@
+{
+  "include": ["coach"],
+  "executionEnvironments": [
+    {
+      "root": "coach",
+      "extraPaths": ["coach"]
+    }
+  ]
+}

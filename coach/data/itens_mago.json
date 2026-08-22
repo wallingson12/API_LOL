@@ -1,0 +1,203 @@
+{
+  "categoria": "mago",
+  "versao_itens": "16.15.1",
+  "epicos": [
+    {
+      "id": "3916",
+      "nome": "Orbe do Oblívio",
+      "ajuda": "poder de habilidade e corta cura"
+    },
+    {
+      "id": "3108",
+      "nome": "Códex Demoníaco",
+      "ajuda": "poder de habilidade e skills mais rápidas"
+    },
+    {
+      "id": "2508",
+      "nome": "Cinzas do Destino",
+      "ajuda": "poder de habilidade e dano ao longo do tempo"
+    },
+    {
+      "id": "3113",
+      "nome": "Cintilação Etérea",
+      "ajuda": "poder de habilidade e velocidade de movimento"
+    },
+    {
+      "id": "4642",
+      "nome": "Espelho de Bandópolis",
+      "ajuda": "poder de habilidade, skills mais rápidas e regeneração de mana"
+    },
+    {
+      "id": "3020",
+      "nome": "Sapatos do Feiticeiro",
+      "ajuda": "penetra resistência mágica e velocidade de movimento"
+    },
+    {
+      "id": "3145",
+      "nome": "Alternador Hextec",
+      "ajuda": "poder de habilidade e dano extra"
+    },
+    {
+      "id": "4630",
+      "nome": "Joia da Ruína",
+      "ajuda": "poder de habilidade e penetra resistência mágica"
+    },
+    {
+      "id": "3802",
+      "nome": "Capítulo Perdido",
+      "ajuda": "poder de habilidade, mana e skills mais rápidas"
+    },
+    {
+      "id": "3147",
+      "nome": "Máscara Assustadora",
+      "ajuda": "poder de habilidade, vida e mais dano na luta"
+    },
+    {
+      "id": "2420",
+      "nome": "Armaguarda da Caçadora",
+      "ajuda": "poder de habilidade, armadura e fica invulnerável por um tempo"
+    },
+    {
+      "id": "4632",
+      "nome": "Barreira Verdejante",
+      "ajuda": "poder de habilidade, resistência mágica e bloqueia uma skill"
+    },
+    {
+      "id": "3057",
+      "nome": "Fulgor",
+      "ajuda": "skills mais rápidas e dano depois da skill"
+    },
+    {
+      "id": "3114",
+      "nome": "Ídolo Proibido",
+      "ajuda": "regeneração de mana"
+    }
+  ],
+  "lendarios": [
+    {
+      "id": "3089",
+      "nome": "Capuz da Morte de Rabadon",
+      "ajuda": "muito poder de habilidade"
+    },
+    {
+      "id": "6655",
+      "nome": "Eco de Luden",
+      "ajuda": "poder de habilidade, mana, skills mais rápidas e explosão de dano"
+    },
+    {
+      "id": "3118",
+      "nome": "Malevolência",
+      "ajuda": "poder de habilidade, mana e skills mais rápidas"
+    },
+    {
+      "id": "2503",
+      "nome": "Tocha de Chamas Negras",
+      "ajuda": "poder de habilidade, mana, skills mais rápidas e dano contínuo"
+    },
+    {
+      "id": "6653",
+      "nome": "Tormento de Liandry",
+      "ajuda": "poder de habilidade, vida e dano contínuo"
+    },
+    {
+      "id": "4645",
+      "nome": "Chama Sombria",
+      "ajuda": "poder de habilidade e penetra resistência mágica"
+    },
+    {
+      "id": "3135",
+      "nome": "Cajado do Vazio",
+      "ajuda": "poder de habilidade e penetra muita resistência mágica"
+    },
+    {
+      "id": "3137",
+      "nome": "Criptoflora",
+      "ajuda": "poder de habilidade, penetração e skills mais rápidas"
+    },
+    {
+      "id": "4628",
+      "nome": "Foco do Horizonte",
+      "ajuda": "poder de habilidade e skills mais rápidas"
+    },
+    {
+      "id": "4646",
+      "nome": "Ápice da Tempestade",
+      "ajuda": "poder de habilidade, penetração e velocidade de movimento"
+    },
+    {
+      "id": "3100",
+      "nome": "Perdição de Lich",
+      "ajuda": "poder de habilidade, velocidade de movimento e dano depois da skill"
+    },
+    {
+      "id": "3115",
+      "nome": "Dente de Na'Shor",
+      "ajuda": "poder de habilidade, velocidade de ataque e dano ao acertar"
+    },
+    {
+      "id": "3116",
+      "nome": "Cetro de Cristal de Rylai",
+      "ajuda": "poder de habilidade, vida e deixa lento"
+    },
+    {
+      "id": "6657",
+      "nome": "Bastão das Eras",
+      "ajuda": "poder de habilidade, vida e mana"
+    },
+    {
+      "id": "3003",
+      "nome": "Cajado do Arcanjo",
+      "ajuda": "poder de habilidade e mana"
+    },
+    {
+      "id": "4629",
+      "nome": "Ímpeto Cósmico",
+      "ajuda": "poder de habilidade, vida, skills mais rápidas e velocidade de movimento"
+    },
+    {
+      "id": "4633",
+      "nome": "Criafendas",
+      "ajuda": "poder de habilidade, vida e roubo de vida"
+    },
+    {
+      "id": "3165",
+      "nome": "Morellonomicon",
+      "ajuda": "poder de habilidade, vida e corta cura"
+    },
+    {
+      "id": "8010",
+      "nome": "Maldição Sanguinária",
+      "ajuda": "poder de habilidade, vida e reduz resistência mágica inimiga"
+    },
+    {
+      "id": "3102",
+      "nome": "Véu da Banshee",
+      "ajuda": "poder de habilidade, resistência mágica e bloqueia uma skill"
+    },
+    {
+      "id": "3157",
+      "nome": "Ampulheta de Zhonya",
+      "ajuda": "poder de habilidade, armadura e fica invulnerável por um tempo"
+    },
+    {
+      "id": "3152",
+      "nome": "Explocinturão Hextec",
+      "ajuda": "poder de habilidade, vida e avanço rápido"
+    },
+    {
+      "id": "3041",
+      "nome": "Ladrão de Almas de Mejai",
+      "ajuda": "poder de habilidade e velocidade de movimento com stacks"
+    },
+    {
+      "id": "2522",
+      "nome": "Atualizador",
+      "ajuda": "poder de habilidade, mana e skills mais rápidas"
+    },
+    {
+      "id": "3146",
+      "nome": "Pistola Laminar Hextec",
+      "ajuda": "poder de habilidade, dano de ataque e roubo de vida"
+    }
+  ]
+}

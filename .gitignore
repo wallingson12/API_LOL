@@ -1,0 +1,36 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Análise gerada (histórico Riot)
+data/partidas_*.csv
+data/eventos_mortes.csv
+data/conclusoes_*.txt
+data/mapa_calor_*.png
+data/mapa.webp
+
+# Runtime
+*.log
