@@ -1,16 +1,8 @@
-# LoL Coach — Callouts por Voz
+# Coach — catálogo de alertas
 
-Assistente de voz em tempo real usando **Live Client Data API** e **LCU API** (dados oficiais locais da Riot).
+Instalação e visão do repo: [`README.md`](../README.md) na raiz.
 
-## Instalação e uso
-
-```bash
-# Na raiz API_LOL/
-pip install -r requirements.txt
-python coach/main.py
-```
-
-Deixe rodando antes da fila. O coach detecta a partida sozinho e começa a falar.
+`python main.py` sobe a UI, o coach e o rastreador (`vision/`). Deixe rodando antes da fila.
 
 ---
 
@@ -226,16 +218,18 @@ Tudo depende do que a **Live Client Data API** expõe em `127.0.0.1:2999`.
 
 ---
 
-## Estrutura de pastas
+## Estrutura
 
 ```
 coach/
-├── main.py                 → loop principal
-├── config.py               → constantes
-├── api/                    → Live Client + LCU
-├── game/events.py          → detecção de eventos
-├── analysis/               → lógica de alertas
-├── voice/narrator.py       → frases
-├── voice/voice.py          → TTS (System.Speech)
-└── data/                   → cache Data Dragon
+├── engine.py               liga voz, alertas e vision
+├── config.py
+├── api/                    Live Client + LCU
+├── analysis/               regras
+├── alerts/                 prioridade / canais
+├── vision/                 rastreador (print + modelo)
+├── game/events.py
+├── voice/
+├── ui/
+└── data/                   cache Data Dragon
 ```

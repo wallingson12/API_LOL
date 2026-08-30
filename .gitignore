@@ -25,6 +25,10 @@ Thumbs.db
 Desktop.ini
 .DS_Store
 
+# Vídeos extraídos do memlol (grandes)
+data/memlol_videos/
+data/ml_ability/
+
 # Análise gerada (histórico Riot)
 data/partidas_*.csv
 data/eventos_mortes.csv
@@ -34,3 +38,5 @@ data/mapa.webp
 
 # Runtime
 *.log
+coach/data/user_notices.json
+coach/data/runes.json

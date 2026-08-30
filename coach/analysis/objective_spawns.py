@@ -71,9 +71,19 @@ class ObjectiveSpawnTracker:
         self._voidgrub_done = False
         self._voidgrub_in_pit = False
         self._next_voidgrub_spawn = VOIDGRUB_FIRST_SPAWN
+        self._last_dragon_key: str | None = None
+        self._seen_dragon_keys: list[str] = []
 
     def reset(self):
         self.__init__()
+
+    def last_dragon_key(self) -> str | None:
+        if self._elder_phase:
+            return "elder"
+        return self._last_dragon_key
+
+    def seen_dragon_keys(self) -> list[str]:
+        return list(self._seen_dragon_keys)
 
     def _load_voidgrub_kills(self, game_data: dict) -> None:
         kills = []
@@ -138,6 +148,14 @@ class ObjectiveSpawnTracker:
         killer: str,
         game_data: dict,
     ) -> None:
+        from data.knowledge import normalize_dragon_key
+
+        key = normalize_dragon_key(dragon_type)
+        if key:
+            self._last_dragon_key = key
+            if key not in self._seen_dragon_keys and key != "elder":
+                self._seen_dragon_keys.append(key)
+
         if _is_elder_dragon(dragon_type):
             self._elder_phase = True
             self._next_dragon = kill_time + ELDER_DRAGON_RESPAWN
@@ -161,6 +179,8 @@ class ObjectiveSpawnTracker:
         self._elder_phase = False
         self._next_dragon = DRAGON_FIRST_SPAWN
         self._dragon_in_pit = False
+        self._last_dragon_key = None
+        self._seen_dragon_keys = []
 
         dragon_events = sorted(
             (
@@ -236,6 +256,16 @@ class ObjectiveSpawnTracker:
                 "us": us,
                 "them": them,
             })
+            key = self.last_dragon_key()
+            if key:
+                from data.knowledge import DRAGONS, format_dragon_body
+                name = (DRAGONS.get(key) or {}).get("name") or key
+                alerts.append({
+                    "type": "dragon_info",
+                    "key": f"dragon_info_{key}",
+                    "text": f"{name}: {format_dragon_body(key)}",
+                    "channel": "text",
+                })
         return alerts
 
     def observe_events(self, events: list[dict], game_data: dict) -> None:

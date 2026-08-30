@@ -7,7 +7,7 @@ import sys
 import requests
 from PIL import Image
 
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUTPUT_DIR = os.path.join(ROOT_DIR, "assets", "champion_icons")
 PROFILES_FILE = os.path.join(ROOT_DIR, "assets", "champion_profiles.json")
 DETAILS_DIR = os.path.join(ROOT_DIR, "assets", "champion_details")

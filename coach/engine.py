@@ -19,15 +19,18 @@ from api.lcu_client import (
 )
 from analysis.analyzer import get_my_team_and_enemies, reset_analyzer_state
 from analysis.coaching_alerts import reset_coaching_state
+from analysis.build_suggest import BuildSuggestTracker, current_suggestion
 from analysis.enemy_item_board import EnemyItemAlertTracker, build_enemy_item_board
+from analysis.hud_cards import build_hud_cards
 from analysis.jungle_reminders import JungleReminderTracker
 from analysis.my_deaths import MyDeathTracker
 from analysis.objective_spawns import ObjectiveSpawnTracker
 from analysis.pregame_briefing import build_ingame_briefing_lines, build_pregame_lines
+from analysis.resource_alerts import ResourceAlertTracker
 from analysis.role_resolve import resolve_lane_opponent, resolve_my_role
 from analysis.tower_lane import TowerLaneTracker
 from analysis.ward_tracker import WardTracker
-from alerts.pipeline import collect_ingame_alerts, speak_alerts
+from alerts.pipeline import collect_ingame_alerts, dispatch_alerts
 from alerts.priority import event_speech_priority
 from data.champion_data import load_champions
 from data.item_data import load_items
@@ -37,6 +40,7 @@ from voice.narrator import narrate_event, narrate_respawn
 from voice.voice import VoiceCoach
 
 _keep_range_started = False
+_vision_started = False
 _last_briefing_keys: set[str] = set()
 _lcu_lane_ctx: dict = {}
 _briefed_match_key: str | None = None
@@ -54,6 +58,21 @@ def _ensure_keep_range() -> None:
         STATE.update(keep_range_enabled=True)
     except Exception:
         pass
+
+
+def _ensure_vision() -> None:
+    """Liga o rastreador visual (print + modelo) junto com o coach."""
+    global _vision_started
+    if _vision_started:
+        return
+    try:
+        from vision.detect import start_tracker
+        start_tracker()
+        _vision_started = True
+        STATE.update(vision_enabled=True)
+        STATE.log("Rastreador visual ligado.")
+    except Exception as exc:
+        STATE.log(f"Rastreador visual indisponível: {exc}")
 
 
 def _match_key(game_data: dict, my_champ: str | None) -> str:
@@ -87,11 +106,16 @@ def _finish_game(voice: VoiceCoach | None = None) -> None:
         game_time=0.0,
         my_champion="",
         my_role="",
+        opponent_champion="",
         dragon_us=0,
         dragon_them=0,
         elder_phase=False,
+        last_dragon_key="",
         enemy_item_board=_empty_item_board(),
+        build_suggestion="",
+        hud_cards=[],
     )
+    STATE.clear_hud()
 
 
 def _reset_after_game() -> None:
@@ -135,6 +159,11 @@ class CoachEngine:
         try:
             load_champions()
             load_items()
+            try:
+                from data.scraper import fetch_runes
+                fetch_runes(force=False)
+            except Exception:
+                pass
         except Exception as exc:
             STATE.log(f"Falha ao carregar dados: {exc}")
         STATE.update(data_loaded=True, status_label="Coach parado")
@@ -156,6 +185,7 @@ class CoachEngine:
         STATE.update(coach_running=True, status="idle", status_label="Iniciando coach...")
         STATE.log("Coach iniciado.")
         thread.start()
+        _ensure_vision()
         return True
 
     def stop(self) -> None:
@@ -168,11 +198,18 @@ class CoachEngine:
             game_time=0.0,
             my_champion="",
             my_role="",
+            opponent_champion="",
             dragon_us=0,
             dragon_them=0,
             elder_phase=False,
+            last_dragon_key="",
             enemy_item_board=_empty_item_board(),
+            build_suggestion="",
+            hud_cards=[],
+            vision_champion="",
+            vision_confidence=0.0,
         )
+        STATE.clear_hud()
         STATE.log("Coach parado.")
 
     def set_voice_enabled(self, enabled: bool) -> None:
@@ -283,10 +320,17 @@ class CoachEngine:
         if not lines or not self._voice:
             return
 
+        opp = ctx.get("lane_opponent_name")
+        if opp:
+            speak_key = f"pregame_vs_{opp}"
+            if speak_key not in _last_briefing_keys:
+                self._voice.say(f"Vs {opp}.", alert_key=speak_key, cooldown=300)
+                _last_briefing_keys.add(speak_key)
+
         for text, key in lines:
             if key in _last_briefing_keys:
                 continue
-            self._voice.say(text, alert_key=key, cooldown=300)
+            STATE.push_hud(text, kind="warn", key=key, cooldown=300)
             _last_briefing_keys.add(key)
 
     def _ingame_loop(self, run_id: int) -> None:
@@ -306,6 +350,8 @@ class CoachEngine:
         jungle_reminders = JungleReminderTracker()
         objective_spawns = ObjectiveSpawnTracker()
         enemy_items = EnemyItemAlertTracker()
+        build_suggest = BuildSuggestTracker()
+        resource_alerts = ResourceAlertTracker()
         last_map_reminder_game_time: float | None = None
         api_misses = 0
         warned_no_player = False
@@ -362,14 +408,55 @@ class CoachEngine:
                 item_board = _empty_item_board()
                 traceback.print_exc()
 
+            try:
+                sug = current_suggestion(item_board, me if me else None, enemies)
+                sug_ui = (sug or {}).get("ui") or ""
+            except Exception:
+                sug_ui = ""
+                traceback.print_exc()
+
+            try:
+                objective_spawns.observe_events([], game_data)
+            except Exception:
+                traceback.print_exc()
+
+            lane_enemy = resolve_lane_opponent(
+                enemies, my_role, _lcu_lane_ctx.get("lane_opponent_name"),
+            )
+            opp_champ = (lane_enemy or {}).get("championName") or ""
+            try:
+                dragon_key = objective_spawns.last_dragon_key() or ""
+            except Exception:
+                dragon_key = ""
+            try:
+                ward_hud = ward_tracker.hud_snapshot(game_data, my_name)
+            except Exception:
+                ward_hud = None
+            try:
+                cards = build_hud_cards(
+                    my_role=my_role,
+                    my_champion=my_champ,
+                    opponent_name=opp_champ or None,
+                    dragon_key=dragon_key or None,
+                    elder_phase=getattr(objective_spawns, "elder_phase", False),
+                    ward_hud=ward_hud,
+                )
+            except Exception:
+                cards = []
+                traceback.print_exc()
+
             STATE.update(
                 game_time=game_time,
                 my_champion=my_champ,
                 my_role=my_role or "",
+                opponent_champion=opp_champ,
                 dragon_us=dragon_us,
                 dragon_them=dragon_them,
                 elder_phase=getattr(objective_spawns, "elder_phase", False),
+                last_dragon_key=dragon_key,
                 enemy_item_board=item_board,
+                build_suggestion=sug_ui,
+                hud_cards=cards,
                 status_label=f"Em partida · {mode_label}",
             )
 
@@ -385,18 +472,20 @@ class CoachEngine:
             ):
                 ingame_briefing_done = True
                 _briefed_match_key = match_key
-                lane_enemy = resolve_lane_opponent(
-                    enemies, my_role, _lcu_lane_ctx.get("lane_opponent_name"),
-                )
-                opp_champ = (lane_enemy or {}).get("championName")
                 lcu_pos = _lcu_lane_ctx.get("my_position") or my_role or "?"
                 for text, key in build_ingame_briefing_lines(
                     lcu_pos, my_champ, opp_champ, my_ingame_role=my_role,
                 ):
                     if key in _last_briefing_keys:
                         continue
-                    voice.say(text, alert_key=key, cooldown=999999)
+                    STATE.push_hud(text, kind="warn", key=key, cooldown=9999)
                     _last_briefing_keys.add(key)
+                if opp_champ:
+                    voice.say(
+                        f"Vs {opp_champ}.",
+                        alert_key=f"vs_{opp_champ}_{match_key}",
+                        cooldown=999999,
+                    )
 
             try:
                 new_events = tracker.diff(game_data)
@@ -422,6 +511,11 @@ class CoachEngine:
                     if text:
                         voice.say(text, priority=event_speech_priority(ev.get("type", "")))
 
+                extra = []
+                try:
+                    extra.extend(resource_alerts.update(game_data))
+                except Exception:
+                    traceback.print_exc()
                 alerts = collect_ingame_alerts(
                     game_data=game_data,
                     new_events=new_events,
@@ -436,12 +530,14 @@ class CoachEngine:
                     ward_tracker=ward_tracker,
                     tracker_is_live=tracker.is_game_live(),
                     monotonic_now=time.monotonic(),
+                    extra_alerts=extra,
                 )
                 try:
                     alerts.extend(enemy_items.alerts_from_board(item_board))
+                    alerts.extend(build_suggest.alerts(item_board, me if me else None, enemies))
                 except Exception:
                     traceback.print_exc()
-                speak_alerts(voice, alerts)
+                dispatch_alerts(voice, alerts)
 
                 armed_at = tracker.map_reminder_armed_at()
                 if armed_at is not None and my_role != "jungler":
@@ -449,11 +545,11 @@ class CoachEngine:
                         last_map_reminder_game_time = armed_at
                     elif game_time >= last_map_reminder_game_time + MAP_REMINDER_INTERVAL_SECONDS:
                         last_map_reminder_game_time = game_time
-                        voice.say(
-                            "Olhe o mapa.",
-                            alert_key="map_reminder",
+                        STATE.push_hud(
+                            "Olhe o mapa. Wave, jungle e lados.",
+                            kind="info",
+                            key="map_reminder",
                             cooldown=MAP_REMINDER_INTERVAL_SECONDS,
-                            priority=event_speech_priority("map_reminder"),
                         )
             except Exception as exc:
                 STATE.log(f"Erro no loop: {exc}")
@@ -466,3 +562,4 @@ class CoachEngine:
         jungle_reminders.reset()
         ward_tracker.reset()
         objective_spawns.reset()
+        resource_alerts.reset()

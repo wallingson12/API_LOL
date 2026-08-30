@@ -7,7 +7,17 @@
     ],
     "attackrange": 175,
     "key": "266",
-    "danger_tip": "Cura na troca e pune quando você erra o timing."
+    "danger_tip": "Cura na troca e pune quando você erra o timing.",
+    "enemy_tips": [
+      "Os ataques de Aatrox são bem indicados, então use o tempo de seus movimentos para escapar das zonas de acerto dele.",
+      "É mais fácil sair das Correntes Infernais de Aatrox se você correr para os lados ou na direção dele.",
+      "Mantenha distância quando Aatrox usar sua ultimate para evitar que ele reviva."
+    ],
+    "ally_tips": [
+      "Use Avanço Umbral quando conjurar A Espada Darkin para aumentar suas chances de acertar um inimigo.",
+      "Habilidades de Controle de Grupo, como Correntes Infernais ou efeitos de imobilização vindos dos seus aliados, ajudarão a preparar tudo para A Espada Darkin.",
+      "Conjure Aniquilador de Mundos quando tiver certeza que pode forçar uma luta."
+    ]
   },
   "103": {
     "id": "Ahri",

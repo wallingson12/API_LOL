@@ -1,5 +1,5 @@
 {
-  "include": ["coach"],
+  "include": ["coach", "analyzer", "scripts", "main.py"],
   "executionEnvironments": [
     {
       "root": "coach",

@@ -66,8 +66,8 @@ class CoachDesktopUI:
         self.engine = engine
         self.root = tk.Tk()
         self.root.title("Coach")
-        self.root.geometry("1080x720")
-        self.root.minsize(900, 620)
+        self.root.geometry("1200x780")
+        self.root.minsize(980, 680)
         self.root.configure(bg=C["bg"])
         try:
             self.root.tk.call("tk", "scaling", 1.2)
@@ -139,11 +139,24 @@ class CoachDesktopUI:
         )
         style.map(
             "App.TCombobox",
-            fieldbackground=[("readonly", C["input"])],
-            foreground=[("readonly", C["text"])],
-            selectbackground=[("readonly", C["gold_dim"])],
-            selectforeground=[("readonly", C["text"])],
+            fieldbackground=[
+                ("readonly", C["input"]),
+                ("disabled", C["input"]),
+                ("!disabled", C["input"]),
+            ],
+            foreground=[
+                ("readonly", C["text"]),
+                ("disabled", C["muted"]),
+                ("!disabled", C["text"]),
+            ],
+            selectbackground=[("readonly", C["gold_dim"]), ("disabled", C["input"])],
+            selectforeground=[("readonly", C["text"]), ("disabled", C["muted"])],
+            background=[("readonly", C["panel"]), ("disabled", C["panel"])],
         )
+        self.root.option_add("*TCombobox*Listbox.background", C["input"])
+        self.root.option_add("*TCombobox*Listbox.foreground", C["text"])
+        self.root.option_add("*TCombobox*Listbox.selectBackground", C["gold_dim"])
+        self.root.option_add("*TCombobox*Listbox.selectForeground", C["text"])
         style.configure(
             "Vertical.TScrollbar",
             background=C["panel_hi"],
@@ -224,6 +237,9 @@ class CoachDesktopUI:
             highlightthickness=1,
             highlightbackground=C["line"],
             highlightcolor=C["gold"],
+            disabledbackground=C["input"],
+            disabledforeground=C["muted"],
+            readonlybackground=C["input"],
         )
 
     # ── layout ─────────────────────────────────────────
@@ -252,7 +268,11 @@ class CoachDesktopUI:
         self._tab_btns: dict[str, tk.Button] = {}
         nav = tk.Frame(side, bg=C["surface"])
         nav.pack(fill="x", padx=12)
-        for key, label in (("coach", "  Coach ao vivo"), ("history", "  Histórico")):
+        for key, label in (
+            ("coach", "  Coach ao vivo"),
+            ("notices", "  Avisos"),
+            ("history", "  Histórico"),
+        ):
             btn = tk.Button(
                 nav,
                 text=label,
@@ -299,21 +319,22 @@ class CoachDesktopUI:
             header, textvariable=self.page_title,
             font=self.f_h2, fg=C["text"], bg=C["bg2"],
         ).pack(side="left", padx=28, pady=22)
-        self.page_sub = tk.StringVar(value="Alertas de voz e itens inimigos")
-        tk.Label(
-            header, textvariable=self.page_sub,
-            font=self.f_body, fg=C["dim"], bg=C["bg2"],
-        ).pack(side="left", padx=(4, 0), pady=22)
         tk.Frame(main, bg=C["gold"], height=2).pack(fill="x")
 
         body = tk.Frame(main, bg=C["bg"])
         body.pack(fill="both", expand=True, padx=28, pady=(8, 24))
 
         self.tab_coach = tk.Frame(body, bg=C["bg"])
+        self.tab_notices = tk.Frame(body, bg=C["bg"])
         self.tab_history = tk.Frame(body, bg=C["bg"])
-        self._tab_frames = {"coach": self.tab_coach, "history": self.tab_history}
+        self._tab_frames = {
+            "coach": self.tab_coach,
+            "notices": self.tab_notices,
+            "history": self.tab_history,
+        }
 
         self._build_coach_tab()
+        self._build_notices_tab()
         self._build_history_tab()
         self._show_tab("coach")
 
@@ -360,6 +381,63 @@ class CoachDesktopUI:
                 self.status_value = lab
             strip.columnconfigure(i, weight=1, uniform="m")
 
+        # Sugestão de build (regra)
+        sug_bar = tk.Frame(
+            self.tab_coach, bg=C["panel"],
+            highlightbackground=C["line"], highlightthickness=1,
+        )
+        sug_bar.pack(fill="x", pady=(0, 18))
+        sug_inner = tk.Frame(sug_bar, bg=C["panel"])
+        sug_inner.pack(fill="x", padx=22, pady=14)
+        tk.Label(
+            sug_inner, text="COMPRE AGORA", font=self.f_label,
+            fg=C["gold"], bg=C["panel"],
+        ).pack(anchor="w")
+        self.build_suggest_var = tk.StringVar(value="—")
+        tk.Label(
+            sug_inner, textvariable=self.build_suggest_var,
+            font=self.f_h2, fg=C["text"], bg=C["panel"], anchor="w",
+        ).pack(anchor="w", pady=(6, 0))
+
+        # Avisos ao vivo + matchup
+        hud = tk.Frame(
+            self.tab_coach, bg=C["panel"],
+            highlightbackground=C["line"], highlightthickness=1,
+        )
+        hud.pack(fill="x", pady=(0, 18))
+        hud_inner = tk.Frame(hud, bg=C["panel"])
+        hud_inner.pack(fill="x", padx=14, pady=12)
+        hud_inner.columnconfigure(0, weight=1)
+        hud_inner.columnconfigure(1, weight=1)
+
+        live = tk.Frame(hud_inner, bg=C["bg2"])
+        live.grid(row=0, column=0, sticky="nsew", padx=(0, 6))
+        tk.Frame(live, bg=C["gold"], height=3).pack(fill="x")
+        live_pad = tk.Frame(live, bg=C["bg2"])
+        live_pad.pack(fill="both", expand=True, padx=12, pady=10)
+        self.hud_alerts_box = tk.Text(
+            live_pad, height=7, wrap="word", font=self.f_body,
+            fg=C["text"], bg=C["bg2"], relief="flat", borderwidth=0,
+            highlightthickness=0, cursor="arrow",
+        )
+        self.hud_alerts_box.insert("1.0", "—")
+        self._lock_text(self.hud_alerts_box)
+        self.hud_alerts_box.pack(fill="both", expand=True)
+
+        cards = tk.Frame(hud_inner, bg=C["bg2"])
+        cards.grid(row=0, column=1, sticky="nsew", padx=(6, 0))
+        tk.Frame(cards, bg=C["info"], height=3).pack(fill="x")
+        cards_pad = tk.Frame(cards, bg=C["bg2"])
+        cards_pad.pack(fill="both", expand=True, padx=12, pady=10)
+        self.hud_cards_box = tk.Text(
+            cards_pad, height=7, wrap="word", font=self.f_body,
+            fg=C["text"], bg=C["bg2"], relief="flat", borderwidth=0,
+            highlightthickness=0, cursor="arrow",
+        )
+        self.hud_cards_box.insert("1.0", "—")
+        self._lock_text(self.hud_cards_box)
+        self.hud_cards_box.pack(fill="both", expand=True)
+
         # Quadro de itens
         board = tk.Frame(self.tab_coach, bg=C["panel"], highlightbackground=C["line"], highlightthickness=1)
         board.pack(fill="both", expand=True)
@@ -370,10 +448,6 @@ class CoachDesktopUI:
             head, text="ITENS INIMIGOS", font=self.f_label,
             fg=C["dim"], bg=C["panel"],
         ).pack(side="left")
-        tk.Label(
-            head, text="atualiza ao vivo  ·  voz na compra",
-            font=self.f_label, fg=C["dim"], bg=C["panel"],
-        ).pack(side="right")
 
         cols = tk.Frame(board, bg=C["panel"])
         cols.pack(fill="both", expand=True, padx=14, pady=(0, 14))
@@ -398,7 +472,7 @@ class CoachDesktopUI:
             ).pack(anchor="w")
             box = tk.Text(
                 inner,
-                height=14,
+                height=9,
                 width=16,
                 font=self.f_body,
                 fg=C["text"],
@@ -410,10 +484,14 @@ class CoachDesktopUI:
                 cursor="arrow",
             )
             box.insert("1.0", "—")
-            box.configure(state="disabled")
+            self._lock_text(box)
             box.pack(anchor="w", fill="both", expand=True, pady=(8, 0))
             self.board_texts[key] = box
             cols.columnconfigure(i, weight=1, uniform="ib")
+
+    def _build_notices_tab(self) -> None:
+        from ui.notices_tab import NoticesPanel
+        NoticesPanel(self.tab_notices, self, C)
 
     def _build_history_tab(self) -> None:
         form = tk.Frame(
@@ -423,11 +501,6 @@ class CoachDesktopUI:
         form.pack(fill="x", pady=(0, 16))
         inner = tk.Frame(form, bg=C["panel"])
         inner.pack(fill="x", padx=22, pady=20)
-
-        tk.Label(
-            inner, text="Análise de histórico", font=self.f_h2,
-            fg=C["text"], bg=C["panel"],
-        ).grid(row=0, column=0, columnspan=4, sticky="w", pady=(0, 14))
 
         boxes = [tk.Frame(inner, bg=C["panel"]) for _ in range(4)]
         for i, box in enumerate(boxes):
@@ -474,9 +547,6 @@ class CoachDesktopUI:
             highlightbackground=C["line"], highlightthickness=1,
         )
         report.pack(fill="both", expand=True)
-        head = tk.Frame(report, bg=C["panel"])
-        head.pack(fill="x", padx=22, pady=(14, 6))
-        tk.Label(head, text="SAÍDA", font=self.f_label, fg=C["dim"], bg=C["panel"]).pack(side="left")
 
         wrap = tk.Frame(report, bg=C["panel"])
         wrap.pack(fill="both", expand=True, padx=14, pady=(0, 14))
@@ -497,16 +567,16 @@ class CoachDesktopUI:
         )
         self.history_box.pack(fill="both", expand=True)
         scroll.config(command=self.history_box.yview)
+        self._lock_text(self.history_box)
 
     def _show_tab(self, key: str) -> None:
         self._active_tab = key
         titles = {
-            "coach": ("Coach ao vivo", "Alertas de voz e itens inimigos"),
-            "history": ("Histórico", "Análise de partidas recentes"),
+            "coach": "Coach ao vivo",
+            "notices": "Avisos",
+            "history": "Histórico",
         }
-        title, sub = titles.get(key, ("", ""))
-        self.page_title.set(title)
-        self.page_sub.set(sub)
+        self.page_title.set(titles.get(key, ""))
 
         for name, frame in self._tab_frames.items():
             if name == key:
@@ -611,6 +681,35 @@ class CoachDesktopUI:
             champ = data["my_champion"] or "—"
             role = data["my_role"] or "—"
             self.champ_var.set(f"{champ}  ·  {role}")
+            if hasattr(self, "build_suggest_var"):
+                self.build_suggest_var.set(data.get("build_suggestion") or "—")
+
+            try:
+                alerts = data.get("hud_alerts") or []
+                if alerts:
+                    hud_live = "\n".join(
+                        row.get("text") or "" for row in alerts[:8] if row.get("text")
+                    )
+                else:
+                    hud_live = "—"
+                self._set_readonly_text(getattr(self, "hud_alerts_box", None), hud_live)
+
+                cards = data.get("hud_cards") or []
+                if cards:
+                    parts = []
+                    for card in cards:
+                        title = (card.get("title") or "").strip()
+                        body = (card.get("body") or "").strip()
+                        if title and body:
+                            parts.append(f"{title}\n{body}")
+                        elif body:
+                            parts.append(body)
+                    hud_cards = "\n\n".join(parts)
+                else:
+                    hud_cards = "—"
+                self._set_readonly_text(getattr(self, "hud_cards_box", None), hud_cards)
+            except Exception:
+                pass
 
             try:
                 board_text = format_board_lines(data.get("enemy_item_board"))
@@ -618,10 +717,8 @@ class CoachDesktopUI:
                     text = board_text.get(key) or "—"
                     current = box.get("1.0", "end-1c")
                     if current != text:
-                        box.configure(state="normal")
                         box.delete("1.0", "end")
                         box.insert("1.0", text)
-                        box.configure(state="disabled")
             except Exception:
                 pass
 
@@ -642,6 +739,20 @@ class CoachDesktopUI:
             pass
         finally:
             self.root.after(400, self._tick)
+
+    def _lock_text(self, box: tk.Text) -> None:
+        box.bind("<Key>", lambda _e: "break")
+        box.bind("<<Paste>>", lambda _e: "break")
+        box.bind("<<Cut>>", lambda _e: "break")
+
+    def _set_readonly_text(self, box: tk.Text | None, text: str) -> None:
+        if box is None:
+            return
+        current = box.get("1.0", "end-1c")
+        if current == text:
+            return
+        box.delete("1.0", "end")
+        box.insert("1.0", text)
 
     def _on_close(self) -> None:
         self.engine.stop()

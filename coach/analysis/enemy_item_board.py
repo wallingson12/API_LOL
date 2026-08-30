@@ -33,9 +33,9 @@ _VOICE_EFFECTS = (
 )
 
 _VOICE_LINES = {
-    "vampirismo": "{champ} com vampirismo. Compre corta cura.",
+    "vampirismo": "{champ} com vampirismo.",
     "corta_cura": "{champ} com corta cura. Não prolongue a troca.",
-    "cura": "{champ} com cura. Compre corta cura.",
+    "cura": "{champ} com cura.",
     "resistencia_magica": "{champ} com resistência mágica.",
     "escudo": "{champ} com escudo.",
 }

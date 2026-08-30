@@ -198,10 +198,9 @@ def narrate_alert(alert: dict) -> tuple[str, str] | None:
         return (text, f"tower_taken_{alert.get('lane', '?')}")
 
     if t == "tower_lost_first":
-        lane = alert.get("lane", "?")
-        lane_name = lane_label(lane)
+        lane_name = lane_label(alert.get("lane", "?"))
         return (
-            f"Perdemos a primeira torre no {lane_name}. Fique calmo.",
+            f"{lane_name.capitalize()} perdeu a torre. Cuidado com rotação.",
             "tower_lost_first",
         )
 
@@ -230,6 +229,31 @@ def narrate_alert(alert: dict) -> tuple[str, str] | None:
             return None
         key = alert.get("key") or f"enemy_item_{alert.get('effect')}_{alert.get('champion')}"
         return (text, key)
+
+    if t == "build_suggest":
+        text = (alert.get("text") or "").strip()
+        if not text:
+            return None
+        key = alert.get("key") or f"build_suggest_{alert.get('need')}"
+        return (text, key)
+
+    if t == "resource_critical":
+        return (
+            alert.get("text") or "Sem recurso. Sobreviva e baseie.",
+            "resource_critical",
+        )
+
+    if t == "resource_low_mana":
+        return (
+            alert.get("text") or "Mana baixa. Planeje o recall.",
+            "resource_low_mana",
+        )
+
+    if t == "resource_low_hp":
+        return (
+            alert.get("text") or "Vida baixa. Não force trade.",
+            "resource_low_hp",
+        )
 
     if t == "lane_level_danger":
         opp_name = alert.get("opponent_name") or "Oponente"

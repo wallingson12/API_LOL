@@ -10,3 +10,8 @@ Pillow>=10.0.0
 # Coach de voz (Live Client + LCU)
 pyttsx3>=2.90
 urllib3>=2.0.0
+keyboard>=0.13.5
+
+# Rastreador visual + treino
+tensorflow>=2.15.0
+opencv-python>=4.9.0

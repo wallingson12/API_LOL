@@ -18,9 +18,12 @@ DDRAGON_VERSIONS_URL = "https://ddragon.leagueoflegends.com/api/versions.json"
 DDRAGON_ITEM_URL_TMPL = "https://ddragon.leagueoflegends.com/cdn/{version}/data/pt_BR/item.json"
 DDRAGON_CHAMP_URL_TMPL = "https://ddragon.leagueoflegends.com/cdn/{version}/data/pt_BR/champion.json"
 DDRAGON_CHAMP_DETAIL_URL_TMPL = "https://ddragon.leagueoflegends.com/cdn/{version}/data/pt_BR/champion/{champ_id}.json"
+DDRAGON_RUNES_URL_TMPL = "https://ddragon.leagueoflegends.com/cdn/{version}/data/pt_BR/runesReforged.json"
 ITEMS_FILE = os.path.join(_DATA_DIR, "items.json")
 CHAMPIONS_FILE = os.path.join(_DATA_DIR, "champions.json")
 ITENS_MAGO_FILE = os.path.join(_DATA_DIR, "itens_mago.json")
+RUNES_FILE = os.path.join(_DATA_DIR, "runes.json")
+USER_NOTICES_FILE = os.path.join(_DATA_DIR, "user_notices.json")
 
 # Polling (API local — 0.5s reduz atraso sem sobrecarregar)
 POLL_INTERVAL_SECONDS = 0.5
@@ -69,7 +72,13 @@ WARD_PLACE_REMINDER_SECONDS = 240  # menos spam de visão
 TRINKET_FULL_REMINDER_SECONDS = 60
 TRINKET_ITEM_IDS = frozenset({3340})  # Warding Totem (amarelo)
 
-# Lembrete de mapa (não-jungle)
+# Recursos (HUD / recall)
+MANA_LOW_RATIO = 0.22
+HP_LOW_RATIO = 0.28
+HP_CRITICAL_RATIO = 0.18
+RESOURCE_ALERT_COOLDOWN_SECONDS = 90
+
+# Lembrete de mapa (não-jungle) — só HUD escrito
 MAP_REMINDER_INTERVAL_SECONDS = 120
 
 # Voz — System.Speech (Maria) = funciona offline, sem internet

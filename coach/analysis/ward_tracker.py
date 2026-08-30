@@ -178,3 +178,14 @@ class WardTracker:
                 alerts.append({"type": "ward_place_reminder", "seconds": int(since_last)})
 
         return alerts
+
+    def hud_snapshot(self, game_data: dict, my_name: str) -> dict:
+        game_t = snapshot_game_time(game_data)
+        remaining = None
+        if self._active_wards:
+            remaining = max(0.0, min(w["expires_at"] - game_t for w in self._active_wards))
+        return {
+            "trinket_charges": _my_trinket_charges(game_data, my_name),
+            "next_expiry": remaining,
+            "active_yellow": len(self._active_wards),
+        }

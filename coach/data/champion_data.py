@@ -113,6 +113,15 @@ def load_champion_profiles(force_refresh: bool = False) -> dict[str, dict]:
     return _champions or {}
 
 
+def reload_champions_from_disk() -> dict[str, dict]:
+    """Relê champions.json (depois de scrape / edição)."""
+    global _champions
+    disk = _read_champions_file()
+    if disk:
+        _champions = disk
+    return _champions or {}
+
+
 def get_champion_name(champion_id: int | str) -> str:
     champs = load_champions()
     return champs.get(str(champion_id), f"Campeão {champion_id}")

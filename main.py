@@ -3,7 +3,7 @@
 import sys
 from pathlib import Path
 
-_COACH_DIR = Path(__file__).resolve().parent
+_COACH_DIR = Path(__file__).resolve().parent / "coach"
 if str(_COACH_DIR) not in sys.path:
     sys.path.insert(0, str(_COACH_DIR))
 
