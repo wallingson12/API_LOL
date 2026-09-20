@@ -214,8 +214,7 @@ Tudo depende do que a **Live Client Data API** expõe em `127.0.0.1:2999`.
 | `VOIDGRUB_WARD_SECONDS` | `45` | Ward larvas |
 | `OBJECTIVE_SPAWN_ALERT_SECONDS` | `60` | Alerta spawn iminente |
 | `POLL_INTERVAL_SECONDS` | `0.5` | Frequência de leitura da API |
-| `VOICE_NAME` | `Microsoft Antonio (Natural) - Portuguese (Brazil)` | Voz TTS. O coach injeta as vozes OneCore do Narrador no SAPI; se o Antonio não aparecer, cai na Maria e avisa no log. |
-| `VOICE_RATE` / `VOICE_PITCH` / `VOICE_VOLUME` | `175` / `1.1` / `1.0` | Velocidade, tom e volume TTS (Windows) |
+| `VOICE_RATE` / `VOICE_VOLUME` | `175` / `1.0` | Velocidade e volume TTS (Windows) |
 
 ---
 
