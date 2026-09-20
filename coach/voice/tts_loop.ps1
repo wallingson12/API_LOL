@@ -1,5 +1,4 @@
-# Persistent TTS loop for the LoL coach.
-# Prefers Microsoft Antonio (Natural) via WinRT; falls back to System.Speech (Maria).
+# Persistent TTS loop. Forces Microsoft Antonio (Natural) from Speech_OneCore.
 $ErrorActionPreference = 'Continue'
 $OutputEncoding = [Console]::InputEncoding = [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 
@@ -24,78 +23,227 @@ function Write-VoiceLog([string]$msg) {
   [Console]::Error.WriteLine($msg)
 }
 
-function Get-SearchTokens([string]$preferred) {
-  $skip = @('Microsoft', 'Online', 'Natural', 'Portuguese', 'Brazil', 'Brasil', 'Desktop')
-  $tokens = @()
-  foreach ($part in ($preferred -split '[^A-Za-z0-9]+')) {
-    if ($part -and ($skip -notcontains $part)) { $tokens += $part }
+function Pick-VoiceName([object[]]$names, [string]$preferred) {
+  $list = @()
+  foreach ($n in @($names)) {
+    if ($n -and "$n".Trim().Length -gt 0) { $list += "$n" }
   }
-  return $tokens
-}
-
-function Select-PreferredName([object[]]$names, [string]$preferred) {
-  if (-not $names) { return $null }
-  $p = $preferred.ToLowerInvariant()
-  foreach ($n in $names) {
-    if ($n -and $n.ToLowerInvariant() -eq $p) { return $n }
+  if ($list.Count -eq 0) { return $null }
+  $pref = $preferred.ToLowerInvariant()
+  foreach ($n in $list) {
+    if ($n.ToLowerInvariant() -eq $pref) { return $n }
   }
-  foreach ($n in $names) {
-    if ($n -and $n.ToLowerInvariant().Contains($p)) { return $n }
+  foreach ($n in $list) {
+    $l = $n.ToLowerInvariant()
+    if ($l.Contains('antonio') -and $l.Contains('natural')) { return $n }
   }
-  $tokens = Get-SearchTokens $preferred
-  foreach ($token in $tokens) {
-    $t = $token.ToLowerInvariant()
-    foreach ($n in $names) {
-      if ($n -and $n.ToLowerInvariant().Contains($t)) { return $n }
-    }
+  foreach ($n in $list) {
+    if ($n.ToLowerInvariant().Contains('antonio')) { return $n }
+  }
+  foreach ($n in $list) {
+    if ($n.ToLowerInvariant().Contains($pref)) { return $n }
   }
   return $null
 }
 
 function Wait-WinRtOp($op, [int]$timeoutSec = 30) {
   $sw = [System.Diagnostics.Stopwatch]::StartNew()
-  while ($op.Status.ToString() -eq 'Started') {
+  while ($true) {
+    $st = $op.Status.ToString()
+    if ($st -ne 'Started' -and $st -ne '0') { break }
     if ($sw.Elapsed.TotalSeconds -gt $timeoutSec) { throw "TTS timeout ($timeoutSec s)" }
     Start-Sleep -Milliseconds 15
   }
   $status = $op.Status.ToString()
-  if ($status -eq 'Error') { throw "TTS error: $($op.ErrorCode)" }
-  if ($status -eq 'Canceled') { throw 'TTS canceled' }
+  if ($status -eq 'Error' -or $status -eq '3') { throw "TTS error: $($op.ErrorCode)" }
+  if ($status -eq 'Canceled' -or $status -eq '2') { throw 'TTS canceled' }
   return $op.GetResults()
+}
+
+function Get-WinRtVoiceList {
+  $all = [Windows.Media.SpeechSynthesis.SpeechSynthesizer]::AllVoices
+  $list = @()
+  $count = 0
+  try { $count = [int]$all.Count } catch { try { $count = [int]$all.Size } catch { $count = 0 } }
+  if ($count -gt 0) {
+    for ($i = 0; $i -lt $count; $i++) {
+      $v = $null
+      try { $v = $all.Item($i) } catch { try { $v = $all[$i] } catch {} }
+      if ($v) { $list += $v }
+    }
+  }
+  if ($list.Count -eq 0) {
+    foreach ($v in $all) { if ($v) { $list += $v } }
+  }
+  return @($list)
+}
+
+$cs = @'
+using System;
+using System.Collections;
+using System.Reflection;
+using System.Speech.Synthesis;
+
+public static class SpeechApiOneCore
+{
+    public static int InjectOneCoreVoices(SpeechSynthesizer synthesizer)
+    {
+        Type synthType = typeof(SpeechSynthesizer);
+        Type objectTokenCategoryType = synthType.Assembly.GetType("System.Speech.Internal.ObjectTokens.ObjectTokenCategory");
+        Type voiceInfoType = synthType.Assembly.GetType("System.Speech.Synthesis.VoiceInfo");
+        Type installedVoiceType = synthType.Assembly.GetType("System.Speech.Synthesis.InstalledVoice");
+        if (objectTokenCategoryType == null || voiceInfoType == null || installedVoiceType == null)
+            throw new NotSupportedException("System.Speech internal types not found");
+
+        object voiceSynthesizer = GetMember(synthesizer, "VoiceSynthesizer", true);
+        if (voiceSynthesizer == null)
+            throw new NotSupportedException("Property not found: VoiceSynthesizer");
+
+        IList installedVoices = GetMember(voiceSynthesizer, "_installedVoices", false) as IList;
+        if (installedVoices == null)
+            throw new NotSupportedException("Field not found: _installedVoices");
+
+        MethodInfo create = objectTokenCategoryType.GetMethod("Create", BindingFlags.Static | BindingFlags.NonPublic);
+        if (create == null)
+            throw new NotSupportedException("ObjectTokenCategory.Create not found");
+        object otc = create.Invoke(null, new object[] { @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech_OneCore\Voices" });
+        if (otc == null)
+            throw new NotSupportedException("ObjectTokenCategory.Create failed");
+
+        int added = 0;
+        try
+        {
+            MethodInfo find = objectTokenCategoryType.GetMethod("FindMatchingTokens", BindingFlags.Instance | BindingFlags.NonPublic);
+            IList tokens = find.Invoke(otc, new object[] { null, null }) as IList;
+            if (tokens == null)
+                throw new NotSupportedException("FindMatchingTokens failed");
+
+            foreach (object token in tokens)
+            {
+                if (token == null || GetMember(token, "Attributes", true) == null)
+                    continue;
+
+                object voiceInfo = synthType.Assembly.CreateInstance(
+                    voiceInfoType.FullName, true,
+                    BindingFlags.Instance | BindingFlags.NonPublic, null,
+                    new object[] { token }, null, null);
+                if (voiceInfo == null)
+                    continue;
+
+                object installedVoice = synthType.Assembly.CreateInstance(
+                    installedVoiceType.FullName, true,
+                    BindingFlags.Instance | BindingFlags.NonPublic, null,
+                    new object[] { voiceSynthesizer, voiceInfo }, null, null);
+                if (installedVoice == null)
+                    continue;
+
+                InstalledVoice ivNew = (InstalledVoice)installedVoice;
+                if (ivNew.VoiceInfo == null)
+                    continue;
+                string newName = ivNew.VoiceInfo.Name;
+                bool exists = false;
+                foreach (InstalledVoice iv in installedVoices)
+                {
+                    if (iv != null && iv.VoiceInfo != null && iv.VoiceInfo.Name == newName)
+                    {
+                        exists = true;
+                        break;
+                    }
+                }
+                if (exists)
+                    continue;
+                installedVoices.Add(installedVoice);
+                added++;
+            }
+        }
+        finally
+        {
+            IDisposable d = otc as IDisposable;
+            if (d != null) d.Dispose();
+        }
+        return added;
+    }
+
+    private static object GetMember(object target, string name, bool property)
+    {
+        BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
+        if (property)
+        {
+            PropertyInfo p = target.GetType().GetProperty(name, flags);
+            return p == null ? null : p.GetValue(target, null);
+        }
+        FieldInfo f = target.GetType().GetField(name, flags);
+        return f == null ? null : f.GetValue(target);
+    }
+}
+'@
+
+Add-Type -AssemblyName System.Speech
+try {
+  if (-not ([System.Management.Automation.PSTypeName]'SpeechApiOneCore').Type) {
+    $speechRef = [System.Speech.Synthesis.SpeechSynthesizer].Assembly.Location
+    Add-Type -ReferencedAssemblies $speechRef -TypeDefinition $cs
+  }
+} catch {
+  Write-VoiceLog ("ONECORE_COMPILE_FAIL:" + $_.Exception.Message)
+}
+
+function Copy-OneCoreToUserSapi {
+  $src = 'HKLM:\SOFTWARE\Microsoft\Speech_OneCore\Voices\Tokens'
+  if (-not (Test-Path $src)) {
+    Write-VoiceLog 'ONECORE_REG_MISSING'
+    return
+  }
+  $dests = @(
+    'HKCU:\SOFTWARE\Microsoft\Speech\Voices\Tokens',
+    'HKCU:\SOFTWARE\WOW6432Node\Microsoft\Speech\Voices\Tokens'
+  )
+  $n = 0
+  foreach ($dest in $dests) {
+    if (-not (Test-Path $dest)) {
+      New-Item -Path $dest -Force | Out-Null
+    }
+    Get-ChildItem $src -ErrorAction SilentlyContinue | ForEach-Object {
+      Copy-Item -Path $_.PSPath -Destination (Join-Path $dest $_.PSChildName) -Recurse -Force -ErrorAction SilentlyContinue
+      $n++
+    }
+  }
+  Write-VoiceLog ("ONECORE_REG_COPIED:" + $n)
 }
 
 $useWinRT = $false
 $winrtSynth = $null
 $sapi = $null
+$sapiPick = $null
 $selectedName = ''
 $backend = 'none'
 
+# --- WinRT (Narrator Natural voices) ---
 try {
   [Windows.Media.SpeechSynthesis.SpeechSynthesizer, Windows.Media.SpeechSynthesis, ContentType = WindowsRuntime] | Out-Null
   [Windows.Storage.Streams.DataReader, Windows.Storage.Streams, ContentType = WindowsRuntime] | Out-Null
   $winrtSynth = [Windows.Media.SpeechSynthesis.SpeechSynthesizer]::new()
-  $voices = @([Windows.Media.SpeechSynthesis.SpeechSynthesizer]::AllVoices)
-  $ptVoices = @($voices | Where-Object { $_.Language -like 'pt*' })
-  $ptNames = @($ptVoices | ForEach-Object { $_.DisplayName })
-  $allNames = @($voices | ForEach-Object { $_.DisplayName })
-  $pick = Select-PreferredName $ptNames $VoiceName
-  if (-not $pick) { $pick = Select-PreferredName $allNames $VoiceName }
-  if (-not $pick) {
-    $naturalPt = @($ptVoices | Where-Object { $_.DisplayName -match 'Natural' } | Select-Object -First 1)
-    if ($naturalPt) { $pick = $naturalPt.DisplayName }
-  }
-  if (-not $pick -and $ptNames.Count -gt 0) { $pick = $ptNames[0] }
-  if ($pick) {
-    $match = $voices | Where-Object { $_.DisplayName -eq $pick } | Select-Object -First 1
+  $winrtVoices = @(Get-WinRtVoiceList)
+  $winrtNames = @($winrtVoices | ForEach-Object { $_.DisplayName })
+  Write-VoiceLog ("WINRT_VOICES:" + ($winrtNames -join ' | '))
+  $winrtPick = Pick-VoiceName $winrtNames $VoiceName
+  if ($winrtPick) {
+    $match = $winrtVoices | Where-Object { $_.DisplayName -eq $winrtPick } | Select-Object -First 1
     if ($match) {
       $winrtSynth.Voice = $match
-      $winrtSynth.Options.SpeakingRate = $SpeakingRate
-      $winrtSynth.Options.AudioPitch = $AudioPitch
-      $winrtSynth.Options.AudioVolume = $AudioVolume
+      try {
+        $winrtSynth.Options.SpeakingRate = $SpeakingRate
+        $winrtSynth.Options.AudioPitch = $AudioPitch
+        $winrtSynth.Options.AudioVolume = $AudioVolume
+      } catch {
+        Write-VoiceLog ("WINRT_OPTIONS:" + $_.Exception.Message)
+      }
       $useWinRT = $true
       $selectedName = $match.DisplayName
       $backend = 'winrt-natural'
     }
+  } else {
+    Write-VoiceLog 'WINRT_NO_ANTONIO'
   }
 } catch {
   $useWinRT = $false
@@ -103,30 +251,50 @@ try {
   Write-VoiceLog ("WINRT_FAIL:" + $_.Exception.Message)
 }
 
-if (-not $useWinRT) {
+# --- SAPI + OneCore inject (makes Antonio visible to System.Speech) ---
+try {
+  Copy-OneCoreToUserSapi
+  $sapi = New-Object System.Speech.Synthesis.SpeechSynthesizer
+  $sapi.Rate = $SapiRate
+  $sapi.Volume = $SapiVolume
   try {
-    Add-Type -AssemblyName System.Speech
-    $sapi = New-Object System.Speech.Synthesis.SpeechSynthesizer
-    $sapi.Rate = $SapiRate
-    $sapi.Volume = $SapiVolume
-    $sapiNames = @($sapi.GetInstalledVoices() | ForEach-Object { $_.VoiceInfo.Name })
-    $pick = Select-PreferredName $sapiNames $VoiceName
-    if ($pick) {
-      $sapi.SelectVoice($pick)
-    } else {
-      foreach ($v in $sapi.GetInstalledVoices()) {
-        if ($v.VoiceInfo.Culture.Name -like 'pt*') {
-          $sapi.SelectVoice($v.VoiceInfo.Name)
-          break
-        }
-      }
-    }
-    $selectedName = $sapi.Voice.Name
-    $backend = 'system-speech'
+    $added = [SpeechApiOneCore]::InjectOneCoreVoices($sapi)
+    Write-VoiceLog ("ONECORE_INJECTED:" + $added)
   } catch {
-    Write-VoiceLog ("SAPI_FAIL:" + $_.Exception.Message)
-    exit 1
+    Write-VoiceLog ("ONECORE_INJECT_FAIL:" + $_.Exception.Message)
   }
+  $sapiNames = @($sapi.GetInstalledVoices() | ForEach-Object { $_.VoiceInfo.Name })
+  Write-VoiceLog ("SAPI_VOICES:" + ($sapiNames -join ' | '))
+  $sapiPick = Pick-VoiceName $sapiNames $VoiceName
+  if ($sapiPick) {
+    $sapi.SelectVoice($sapiPick)
+    if (-not $useWinRT) {
+      $selectedName = $sapi.Voice.Name
+      $backend = 'sapi-onecore'
+    }
+  } elseif (-not $useWinRT) {
+    Write-VoiceLog 'SAPI_NO_ANTONIO'
+  }
+} catch {
+  Write-VoiceLog ("SAPI_FAIL:" + $_.Exception.Message)
+  if (-not $useWinRT) { exit 1 }
+}
+
+if (-not $useWinRT -and $sapi -and -not $sapiPick) {
+  foreach ($v in $sapi.GetInstalledVoices()) {
+    if ($v.VoiceInfo.Culture.Name -like 'pt*') {
+      $sapi.SelectVoice($v.VoiceInfo.Name)
+      $selectedName = $sapi.Voice.Name
+      $backend = 'system-speech'
+      Write-VoiceLog ("FALLBACK_VOICE:" + $selectedName)
+      break
+    }
+  }
+}
+
+if ([string]::IsNullOrWhiteSpace($selectedName) -and $sapi) {
+  $selectedName = $sapi.Voice.Name
+  $backend = 'system-speech'
 }
 
 function Speak-WinRT-MediaPlayer($stream) {
@@ -176,8 +344,16 @@ while ($null -ne ($line = [Console]::In.ReadLine())) {
   if ($line -eq $ExitToken) { break }
   if ($line.Length -le 0) { continue }
   try {
-    if ($useWinRT) { Speak-WinRT $line }
-    else { $sapi.Speak($line) }
+    if ($useWinRT) {
+      try { Speak-WinRT $line }
+      catch {
+        Write-VoiceLog ("WINRT_SPEAK_FAIL:" + $_.Exception.Message)
+        if ($sapi) { $sapi.Speak($line) }
+        else { throw }
+      }
+    } else {
+      $sapi.Speak($line)
+    }
   } catch {
     Write-VoiceLog ("SPEAK_FAIL:" + $_.Exception.Message)
   }

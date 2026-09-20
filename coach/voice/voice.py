@@ -57,8 +57,16 @@ class VoiceCoach:
         self._stderr_thread: threading.Thread | None = None
         self._thread = threading.Thread(target=self._worker, daemon=True, name="VoiceCoach-TTS")
         self._thread.start()
-        if not self._ready.wait(timeout=8):
+        if not self._ready.wait(timeout=25):
             print("  [voice] AVISO: TTS demorou para iniciar. Audio pode falhar.")
+
+    @property
+    def voice_name(self) -> str:
+        return self._voice_name or VOICE_NAME
+
+    @property
+    def backend(self) -> str:
+        return self._backend
 
     def set_muted(self, muted: bool) -> None:
         self._muted = muted
@@ -87,9 +95,11 @@ class VoiceCoach:
         if text.startswith("VOICE:"):
             self._voice_name = text[6:].strip() or self._voice_name
             self._neural = is_neural_voice(self._voice_name or "")
+            print(f"  [voice] selecionada: {self._voice_name}")
             return
         if text.startswith("BACKEND:"):
             self._backend = text[8:].strip() or self._backend
+            print(f"  [voice] backend: {self._backend}")
             return
         if text == "READY":
             return
@@ -102,7 +112,7 @@ class VoiceCoach:
         for raw in proc.stderr:
             self._handle_stderr_line(raw)
 
-    def _wait_until_ready(self, timeout: float = 6.0) -> bool:
+    def _wait_until_ready(self, timeout: float = 20.0) -> bool:
         proc = self._proc
         if not proc or not proc.stderr:
             return False
@@ -184,6 +194,8 @@ class VoiceCoach:
                 self._backend = "powershell-persistent"
             shown = self._voice_name or VOICE_NAME
             print(f"  [voice] TTS ativo ({self._backend}: {shown})")
+            if shown and "maria" in shown.casefold() and "antonio" in VOICE_NAME.casefold():
+                print("  [voice] AVISO: Antonio Natural nao foi selecionado. Instale a voz no Windows.")
         except Exception as exc:
             self._backend = "powershell-persistent"
             print(f"  [voice] System.Speech/WinRT indisponivel ({exc}).")

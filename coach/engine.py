@@ -242,6 +242,9 @@ class CoachEngine:
                 self._voice = LoggingVoiceCoach()
             self._voice.set_muted(False)
             STATE.update(voice_enabled=True)
+            STATE.log(f"Voz: {self._voice.voice_name} ({self._voice.backend})")
+            if "maria" in (self._voice.voice_name or "").casefold():
+                STATE.log("Antonio Natural nao selecionado — instale a voz no Windows (Narrador).")
             # Não espera a fila esvaziar — só enfileira o teste
             self._voice.say("Coach de voz pronto.", alert_key=None, cooldown=0)
         except Exception as exc:
