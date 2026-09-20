@@ -192,6 +192,7 @@ class VoiceCoach:
             self._start_tts_process()
             if self._backend == "unknown":
                 self._backend = "powershell-persistent"
+            print("  [voice] build: antonio-d239")
             shown = self._voice_name or VOICE_NAME
             print(f"  [voice] TTS ativo ({self._backend}: {shown})")
             if shown and "maria" in shown.casefold() and "antonio" in VOICE_NAME.casefold():

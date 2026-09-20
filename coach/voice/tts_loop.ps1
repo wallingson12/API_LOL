@@ -215,43 +215,11 @@ $useWinRT = $false
 $winrtSynth = $null
 $sapi = $null
 $sapiPick = $null
+$winrtPick = $null
 $selectedName = ''
 $backend = 'none'
 
-# --- WinRT (Narrator Natural voices) ---
-try {
-  [Windows.Media.SpeechSynthesis.SpeechSynthesizer, Windows.Media.SpeechSynthesis, ContentType = WindowsRuntime] | Out-Null
-  [Windows.Storage.Streams.DataReader, Windows.Storage.Streams, ContentType = WindowsRuntime] | Out-Null
-  $winrtSynth = [Windows.Media.SpeechSynthesis.SpeechSynthesizer]::new()
-  $winrtVoices = @(Get-WinRtVoiceList)
-  $winrtNames = @($winrtVoices | ForEach-Object { $_.DisplayName })
-  Write-VoiceLog ("WINRT_VOICES:" + ($winrtNames -join ' | '))
-  $winrtPick = Pick-VoiceName $winrtNames $VoiceName
-  if ($winrtPick) {
-    $match = $winrtVoices | Where-Object { $_.DisplayName -eq $winrtPick } | Select-Object -First 1
-    if ($match) {
-      $winrtSynth.Voice = $match
-      try {
-        $winrtSynth.Options.SpeakingRate = $SpeakingRate
-        $winrtSynth.Options.AudioPitch = $AudioPitch
-        $winrtSynth.Options.AudioVolume = $AudioVolume
-      } catch {
-        Write-VoiceLog ("WINRT_OPTIONS:" + $_.Exception.Message)
-      }
-      $useWinRT = $true
-      $selectedName = $match.DisplayName
-      $backend = 'winrt-natural'
-    }
-  } else {
-    Write-VoiceLog 'WINRT_NO_ANTONIO'
-  }
-} catch {
-  $useWinRT = $false
-  $winrtSynth = $null
-  Write-VoiceLog ("WINRT_FAIL:" + $_.Exception.Message)
-}
-
-# --- SAPI + OneCore inject (makes Antonio visible to System.Speech) ---
+# --- SAPI + OneCore primeiro: e o mesmo Speak() que ja funciona neste PC ---
 try {
   Copy-OneCoreToUserSapi
   $sapi = New-Object System.Speech.Synthesis.SpeechSynthesizer
@@ -268,16 +236,49 @@ try {
   $sapiPick = Pick-VoiceName $sapiNames $VoiceName
   if ($sapiPick) {
     $sapi.SelectVoice($sapiPick)
-    if (-not $useWinRT) {
-      $selectedName = $sapi.Voice.Name
-      $backend = 'sapi-onecore'
-    }
-  } elseif (-not $useWinRT) {
+    $selectedName = $sapi.Voice.Name
+    $backend = 'sapi-onecore'
+    Write-VoiceLog ("SAPI_SELECTED:" + $selectedName)
+  } else {
     Write-VoiceLog 'SAPI_NO_ANTONIO'
   }
 } catch {
   Write-VoiceLog ("SAPI_FAIL:" + $_.Exception.Message)
-  if (-not $useWinRT) { exit 1 }
+}
+
+# --- WinRT so se o SAPI nao achou o Antonio ---
+if (-not $sapiPick) {
+  try {
+    [Windows.Media.SpeechSynthesis.SpeechSynthesizer, Windows.Media.SpeechSynthesis, ContentType = WindowsRuntime] | Out-Null
+    [Windows.Storage.Streams.DataReader, Windows.Storage.Streams, ContentType = WindowsRuntime] | Out-Null
+    $winrtSynth = [Windows.Media.SpeechSynthesis.SpeechSynthesizer]::new()
+    $winrtVoices = @(Get-WinRtVoiceList)
+    $winrtNames = @($winrtVoices | ForEach-Object { $_.DisplayName })
+    Write-VoiceLog ("WINRT_VOICES:" + ($winrtNames -join ' | '))
+    $winrtPick = Pick-VoiceName $winrtNames $VoiceName
+    if ($winrtPick) {
+      $match = $winrtVoices | Where-Object { $_.DisplayName -eq $winrtPick } | Select-Object -First 1
+      if ($match) {
+        $winrtSynth.Voice = $match
+        try {
+          $winrtSynth.Options.SpeakingRate = $SpeakingRate
+          $winrtSynth.Options.AudioPitch = $AudioPitch
+          $winrtSynth.Options.AudioVolume = $AudioVolume
+        } catch {
+          Write-VoiceLog ("WINRT_OPTIONS:" + $_.Exception.Message)
+        }
+        $useWinRT = $true
+        $selectedName = $match.DisplayName
+        $backend = 'winrt-natural'
+      }
+    } else {
+      Write-VoiceLog 'WINRT_NO_ANTONIO'
+    }
+  } catch {
+    $useWinRT = $false
+    $winrtSynth = $null
+    Write-VoiceLog ("WINRT_FAIL:" + $_.Exception.Message)
+  }
 }
 
 if (-not $useWinRT -and $sapi -and -not $sapiPick) {
