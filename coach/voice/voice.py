@@ -1,8 +1,10 @@
 """
 voice.py — Fila de fala (TTS) com cooldown por tipo de alerta, pra não floodar
 
-Mesmo System.Speech local de sempre. Escolhe Microsoft Antonio (Natural)
-em vez da primeira voz pt-BR (Maria Desktop).
+Mantém um processo PowerShell + SAPI aberto o tempo todo (não spawna
+um PowerShell novo a cada frase — isso adicionava ~1s de atraso por callout).
+
+Usa a voz local do Narrador: Microsoft Antonio (Natural) - Portuguese (Brazil).
 """
 
 import itertools
@@ -10,7 +12,6 @@ import os
 import queue
 import re
 import subprocess
-import tempfile
 import threading
 import time
 
@@ -19,86 +20,55 @@ from voice.tts_text import normalize_for_tts
 
 _EXIT = "__EXIT__"
 _CREATE_NO_WINDOW = 0x08000000
-_PREFERRED_VOICE = "Antonio"
-
-_PS1 = r"""
-$ErrorActionPreference = 'Continue'
-$OutputEncoding = [Console]::InputEncoding = [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
-$Rate = 2
-if ($env:COACH_TTS_RATE) { $Rate = [int]$env:COACH_TTS_RATE }
-$Volume = 100
-if ($env:COACH_TTS_VOLUME) { $Volume = [int]$env:COACH_TTS_VOLUME }
-$ExitToken = '__EXIT__'
-function Log([string]$m) { [Console]::Error.WriteLine($m) }
-
-$speaker = $null
-$picked = $null
-
-try {
-  $speaker = New-Object -ComObject SAPI.SpVoice
-  $speaker.Rate = $Rate
-  $speaker.Volume = $Volume
-  $cat = New-Object -ComObject SAPI.SpObjectTokenCategory
-  $cat.SetId('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech_OneCore\Voices', $false)
-  $tokens = $cat.EnumerateTokens('', '')
-  foreach ($t in $tokens) {
-    $d = $t.GetDescription()
-    Log ("TOKEN:" + $d)
-    if (-not $picked -and $d -match 'Antonio') {
-      $speaker.Voice = $t
-      $picked = $d
-    }
-  }
-} catch {
-  Log ("ONECORE_COM_FAIL:" + $_.Exception.Message)
-}
-
-if (-not $picked) {
-  Add-Type -AssemblyName System.Speech
-  $speaker = New-Object System.Speech.Synthesis.SpeechSynthesizer
-  $speaker.Rate = $Rate
-  $speaker.Volume = $Volume
-  foreach ($v in $speaker.GetInstalledVoices()) {
-    $n = $v.VoiceInfo.Name
-    Log ("SAPI:" + $n)
-    if (-not $picked -and $n -match 'Antonio') {
-      $speaker.SelectVoice($n)
-      $picked = $n
-    }
-  }
-  if (-not $picked) {
-    foreach ($v in $speaker.GetInstalledVoices()) {
-      if ($v.VoiceInfo.Culture.Name -like 'pt*') {
-        $speaker.SelectVoice($v.VoiceInfo.Name)
-        $picked = $v.VoiceInfo.Name
-        break
-      }
-    }
-  }
-  $useDotNet = $true
-} else {
-  $useDotNet = $false
-}
-
-Log ("VOICE:" + $picked)
-Log 'READY'
-
-while ($null -ne ($line = [Console]::In.ReadLine())) {
-  if ($line -eq $ExitToken) { break }
-  if ($line.Length -le 0) { continue }
-  try {
-    if ($useDotNet) { $speaker.Speak($line) }
-    else { [void]$speaker.Speak($line, 0) }
-  } catch {
-    Log ("SPEAK_FAIL:" + $_.Exception.Message)
-  }
-}
-""".strip()
 
 
 def _tts_parts(text: str) -> list[str]:
     parts = [p.strip() for p in re.split(r"(?<=[.!?])\s+", text.strip()) if p.strip()]
     return parts or [text.strip()]
+
+
+def _powershell_tts_script(rate: int, volume: int) -> str:
+    # OneCore = mesmas vozes do Narrador (Antonio Natural).
+    # System.Speech sozinho só vê a Maria Desktop.
+    return f"""
+$OutputEncoding = [Console]::InputEncoding = [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+$ExitToken = '{_EXIT}'
+$Rate = {rate}
+$Volume = {volume}
+$speaker = $null
+$picked = $false
+$useDotNet = $false
+try {{
+  $speaker = New-Object -ComObject SAPI.SpVoice
+  $speaker.Rate = $Rate
+  $speaker.Volume = $Volume
+  $cat = New-Object -ComObject SAPI.SpObjectTokenCategory
+  $cat.SetId('HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech_OneCore\\Voices', $false)
+  foreach ($t in $cat.EnumerateTokens('', '')) {{
+    $d = $t.GetDescription()
+    if ($d -match 'Antonio') {{ $speaker.Voice = $t; $picked = $true; break }}
+  }}
+}} catch {{
+  $speaker = $null
+}}
+if (-not $picked) {{
+  Add-Type -AssemblyName System.Speech
+  $speaker = New-Object System.Speech.Synthesis.SpeechSynthesizer
+  $speaker.Rate = $Rate
+  $speaker.Volume = $Volume
+  $useDotNet = $true
+  foreach ($v in $speaker.GetInstalledVoices()) {{
+    if ($v.VoiceInfo.Name -match 'Antonio') {{ $speaker.SelectVoice($v.VoiceInfo.Name); break }}
+  }}
+}}
+while ($null -ne ($line = [Console]::In.ReadLine())) {{
+  if ($line -eq $ExitToken) {{ break }}
+  if ($line.Length -gt 0) {{
+    if ($useDotNet) {{ $speaker.Speak($line) }}
+    else {{ [void]$speaker.Speak($line, 0) }}
+  }}
+}}
+""".strip()
 
 
 class VoiceCoach:
@@ -112,15 +82,14 @@ class VoiceCoach:
         self._proc: subprocess.Popen | None = None
         self._proc_lock = threading.Lock()
         self._muted = False
-        self._ps1_path = self._write_ps1()
         self._thread = threading.Thread(target=self._worker, daemon=True, name="VoiceCoach-TTS")
         self._thread.start()
-        if not self._ready.wait(timeout=20):
+        if not self._ready.wait(timeout=8):
             print("  [voice] AVISO: TTS demorou para iniciar. Audio pode falhar.")
 
     @property
     def voice_name(self) -> str:
-        return self._voice_name or _PREFERRED_VOICE
+        return self._voice_name or "Microsoft Antonio (Natural) - Portuguese (Brazil)"
 
     @property
     def backend(self) -> str:
@@ -129,76 +98,27 @@ class VoiceCoach:
     def set_muted(self, muted: bool) -> None:
         self._muted = muted
 
-    def _write_ps1(self) -> str:
-        path = os.path.join(tempfile.gettempdir(), "coach_antonio_tts.ps1")
-        with open(path, "w", encoding="utf-8") as fh:
-            fh.write(_PS1)
-        return path
-
     def _rate_and_volume(self) -> tuple[int, int]:
         rate = max(-10, min(10, (VOICE_RATE - 150) // 10))
         volume = int(VOICE_VOLUME * 100)
         return rate, volume
 
-    def _tts_env(self) -> dict[str, str]:
-        rate, volume = self._rate_and_volume()
-        env = os.environ.copy()
-        env["COACH_TTS_RATE"] = str(rate)
-        env["COACH_TTS_VOLUME"] = str(volume)
-        env["COACH_TTS_VOICE"] = _PREFERRED_VOICE
-        return env
-
-    def _handle_stderr_line(self, line: str) -> None:
-        text = line.strip()
-        if not text or text == "READY":
-            return
-        if text.startswith("VOICE:"):
-            self._voice_name = text[6:].strip() or self._voice_name
-            return
-        print(f"  [voice] {text}")
-
-    def _wait_until_ready(self, timeout: float = 15.0) -> bool:
-        proc = self._proc
-        if not proc or not proc.stderr:
-            return False
-        deadline = time.time() + timeout
-        while time.time() < deadline:
-            if proc.poll() is not None:
-                return False
-            raw = proc.stderr.readline()
-            if not raw:
-                return False
-            line = raw.strip()
-            self._handle_stderr_line(line)
-            if line == "READY":
-                return True
-        return False
-
-    def _drain_stderr(self) -> None:
-        proc = self._proc
-        if not proc or not proc.stderr:
-            return
-        for raw in proc.stderr:
-            self._handle_stderr_line(raw)
-
     def _start_tts_process(self) -> None:
         if self._proc and self._proc.poll() is None:
             return
+        rate, volume = self._rate_and_volume()
         kwargs: dict = dict(
-            args=["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", self._ps1_path],
+            args=["powershell", "-NoProfile", "-Command", _powershell_tts_script(rate, volume)],
             stdin=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
             encoding="utf-8",
             errors="replace",
             bufsize=1,
-            env=self._tts_env(),
         )
         if os.name == "nt":
             kwargs["creationflags"] = _CREATE_NO_WINDOW
         self._proc = subprocess.Popen(**kwargs)
-        self._wait_until_ready()
-        threading.Thread(target=self._drain_stderr, daemon=True, name="VoiceCoach-TTS-err").start()
 
     def _stop_tts_process(self) -> None:
         proc = self._proc
@@ -238,9 +158,8 @@ class VoiceCoach:
         try:
             self._start_tts_process()
             self._backend = "powershell-persistent"
-            shown = self._voice_name or "(detectando voz)"
-            print("  [voice] ANTONIO-LOCAL 2026-09-20")
-            print(f"  [voice] TTS local ({shown})")
+            self._voice_name = "Microsoft Antonio (Natural) - Portuguese (Brazil)"
+            print(f"  [voice] TTS ativo via System.Speech ({self._voice_name})")
         except Exception as exc:
             self._backend = "powershell-persistent"
             print(f"  [voice] System.Speech indisponivel ({exc}).")
@@ -253,13 +172,16 @@ class VoiceCoach:
                 self._queue.task_done()
                 self._stop_tts_process()
                 break
+
             try:
                 self._speak_line(text)
             except Exception as exc:
                 print(f"  [voice] ERRO ao falar: {exc}")
+
             self._queue.task_done()
 
     def test_speak(self) -> bool:
+        """Fala uma frase curta na inicializacao para confirmar que o audio funciona."""
         self.say("Coach de voz pronto.", alert_key=None, cooldown=0)
         deadline = time.time() + 12
         while self._queue.unfinished_tasks > 0 and time.time() < deadline:

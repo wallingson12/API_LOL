@@ -81,8 +81,8 @@ RESOURCE_ALERT_COOLDOWN_SECONDS = 90
 # Lembrete de mapa (não-jungle) — só HUD escrito
 MAP_REMINDER_INTERVAL_SECONDS = 120
 
-# Voz — Antonio Natural (WinRT) com fallback para Maria Desktop (SAPI)
-VOICE_BACKEND = "natural"
+# Voz — Antonio Natural do Narrador (SAPI OneCore local)
+VOICE_BACKEND = "system"
 VOICE_ID = "pt-BR-AntonioNeural"
 VOICE_NAME = "Microsoft Antonio (Natural) - Portuguese (Brazil)"
 VOICE_RATE = 175
