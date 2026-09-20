@@ -81,11 +81,12 @@ RESOURCE_ALERT_COOLDOWN_SECONDS = 90
 # Lembrete de mapa (não-jungle) — só HUD escrito
 MAP_REMINDER_INTERVAL_SECONDS = 120
 
-# Voz — System.Speech (Maria) = funciona offline, sem internet
-VOICE_BACKEND = "system"
-VOICE_ID = "pt-BR-FranciscaNeural"
-VOICE_NAME = ""
+# Voz — Antonio Natural (WinRT) com fallback para Maria Desktop (SAPI)
+VOICE_BACKEND = "natural"
+VOICE_ID = "pt-BR-AntonioNeural"
+VOICE_NAME = "Microsoft Antonio (Natural) - Portuguese (Brazil)"
 VOICE_RATE = 175
+VOICE_PITCH = 1.1
 VOICE_VOLUME = 1.0
 
 # Alertas desligados

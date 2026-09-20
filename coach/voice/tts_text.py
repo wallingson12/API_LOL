@@ -1,8 +1,9 @@
 """
-tts_text.py — Ajustes antes do TTS (Maria / System.Speech PT-BR)
+tts_text.py — Ajustes antes do TTS (PT-BR)
 
-Maria soletra se o acento se perde (dragão→dragao) ou se não conhece o léxico.
-Usamos fonética estável (dragaum, dragoens) para ela falar a palavra inteira.
+A Maria Desktop (SAPI) soletra se o acento se perde (dragão→dragao).
+Vozes Natural (Antonio) leem o português certo — a fonética artificial
+só entra no fallback SAPI.
 """
 
 import re
@@ -26,7 +27,12 @@ _PHONETIC = (
 )
 
 
-def normalize_for_tts(text: str) -> str:
+def is_neural_voice(name: str) -> bool:
+    n = (name or "").casefold()
+    return any(token in n for token in ("natural", "neural", "antonio", "francisca"))
+
+
+def normalize_for_tts(text: str, phonetic: bool = True) -> str:
     if not text:
         return text
 
@@ -75,8 +81,9 @@ def normalize_for_tts(text: str) -> str:
         out,
     )
 
-    for pattern, repl in _PHONETIC:
-        out = re.sub(pattern, repl, out)
+    if phonetic:
+        for pattern, repl in _PHONETIC:
+            out = re.sub(pattern, repl, out)
 
     out = re.sub(r"\s+", " ", out).strip()
     if out and out[-1] not in ".!?":
