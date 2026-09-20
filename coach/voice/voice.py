@@ -1,45 +1,118 @@
 """
 voice.py — Fila de fala (TTS) com cooldown por tipo de alerta, pra não floodar
 
-Mantém um processo PowerShell aberto o tempo todo (não spawna um PowerShell
-novo a cada frase — isso adicionava ~1s de atraso por callout).
-
-Usa Microsoft Antonio (Natural) via WinRT quando a voz está instalada no
-Windows; cai para System.Speech (Maria Desktop) se o natural não existir.
+Mesmo System.Speech local de sempre. Escolhe Microsoft Antonio (Natural)
+em vez da primeira voz pt-BR (Maria Desktop).
 """
-
-from __future__ import annotations
 
 import itertools
 import os
 import queue
 import re
 import subprocess
+import tempfile
 import threading
 import time
 
-from config import (
-    ALERT_COOLDOWN_SECONDS,
-    VOICE_NAME,
-    VOICE_PITCH,
-    VOICE_RATE,
-    VOICE_VOLUME,
-)
-from voice.tts_text import is_neural_voice, normalize_for_tts
+from config import VOICE_RATE, VOICE_VOLUME, ALERT_COOLDOWN_SECONDS
+from voice.tts_text import normalize_for_tts
 
 _EXIT = "__EXIT__"
 _CREATE_NO_WINDOW = 0x08000000
-_TTS_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tts_loop.ps1")
+_PREFERRED_VOICE = "Antonio"
+
+_PS1 = r"""
+$ErrorActionPreference = 'Continue'
+$OutputEncoding = [Console]::InputEncoding = [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+$Rate = 2
+if ($env:COACH_TTS_RATE) { $Rate = [int]$env:COACH_TTS_RATE }
+$Volume = 100
+if ($env:COACH_TTS_VOLUME) { $Volume = [int]$env:COACH_TTS_VOLUME }
+$ExitToken = '__EXIT__'
+
+function Log([string]$m) { [Console]::Error.WriteLine($m) }
+
+$cs = @'
+using System;
+using System.Collections;
+using System.Reflection;
+using System.Speech.Synthesis;
+public static class SpeechApiOneCore {
+  public static int Inject(SpeechSynthesizer synthesizer) {
+    Type st = typeof(SpeechSynthesizer);
+    Type cat = st.Assembly.GetType("System.Speech.Internal.ObjectTokens.ObjectTokenCategory");
+    Type vi = st.Assembly.GetType("System.Speech.Synthesis.VoiceInfo");
+    Type ivt = st.Assembly.GetType("System.Speech.Synthesis.InstalledVoice");
+    object vs = st.GetProperty("VoiceSynthesizer", BindingFlags.Instance|BindingFlags.NonPublic).GetValue(synthesizer, null);
+    System.Collections.IList installed = vs.GetType().GetField("_installedVoices", BindingFlags.Instance|BindingFlags.NonPublic).GetValue(vs) as IList;
+    object otc = cat.GetMethod("Create", BindingFlags.Static|BindingFlags.NonPublic).Invoke(null, new object[]{@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech_OneCore\Voices"});
+    int added = 0;
+    try {
+      IList tokens = cat.GetMethod("FindMatchingTokens", BindingFlags.Instance|BindingFlags.NonPublic).Invoke(otc, new object[]{null,null}) as IList;
+      foreach (object token in tokens) {
+        if (token == null) continue;
+        object info = st.Assembly.CreateInstance(vi.FullName, true, BindingFlags.Instance|BindingFlags.NonPublic, null, new object[]{token}, null, null);
+        object inst = st.Assembly.CreateInstance(ivt.FullName, true, BindingFlags.Instance|BindingFlags.NonPublic, null, new object[]{vs, info}, null, null);
+        InstalledVoice nv = (InstalledVoice)inst;
+        bool exists = false;
+        foreach (InstalledVoice old in installed) {
+          if (old != null && old.VoiceInfo != null && nv.VoiceInfo != null && old.VoiceInfo.Name == nv.VoiceInfo.Name) { exists = true; break; }
+        }
+        if (!exists) { installed.Add(inst); added++; }
+      }
+    } finally { if (otc is IDisposable) ((IDisposable)otc).Dispose(); }
+    return added;
+  }
+}
+'@
+
+Add-Type -AssemblyName System.Speech
+try {
+  if (-not ([System.Management.Automation.PSTypeName]'SpeechApiOneCore').Type) {
+    Add-Type -ReferencedAssemblies ([System.Speech.Synthesis.SpeechSynthesizer].Assembly.Location) -TypeDefinition $cs
+  }
+} catch { Log ("ONECORE_COMPILE_FAIL:" + $_.Exception.Message) }
+
+$src = 'HKLM:\SOFTWARE\Microsoft\Speech_OneCore\Voices\Tokens'
+$dest = 'HKCU:\SOFTWARE\Microsoft\Speech\Voices\Tokens'
+if (Test-Path $src) {
+  if (-not (Test-Path $dest)) { New-Item -Path $dest -Force | Out-Null }
+  Get-ChildItem $src -ErrorAction SilentlyContinue | ForEach-Object {
+    Copy-Item $_.PSPath -Destination (Join-Path $dest $_.PSChildName) -Recurse -Force -ErrorAction SilentlyContinue
+  }
+}
+
+$s = New-Object System.Speech.Synthesis.SpeechSynthesizer
+$s.Rate = $Rate
+$s.Volume = $Volume
+try { Log ("ONECORE_INJECTED:" + [SpeechApiOneCore]::Inject($s)) } catch { Log ("ONECORE_INJECT_FAIL:" + $_.Exception.Message) }
+
+$names = @($s.GetInstalledVoices() | ForEach-Object { $_.VoiceInfo.Name })
+Log ("SAPI_VOICES:" + ($names -join ' | '))
+
+$pick = $null
+foreach ($n in $names) { if ($n -match 'Antonio') { $pick = $n; break } }
+if (-not $pick) {
+  foreach ($v in $s.GetInstalledVoices()) {
+    if ($v.VoiceInfo.Culture.Name -like 'pt*') { $pick = $v.VoiceInfo.Name; break }
+  }
+}
+if ($pick) { $s.SelectVoice($pick) }
+Log ("VOICE:" + $s.Voice.Name)
+Log 'READY'
+
+while ($null -ne ($line = [Console]::In.ReadLine())) {
+  if ($line -eq $ExitToken) { break }
+  if ($line.Length -gt 0) {
+    try { $s.Speak($line) } catch { Log ("SPEAK_FAIL:" + $_.Exception.Message) }
+  }
+}
+""".strip()
 
 
 def _tts_parts(text: str) -> list[str]:
-    """Quebra em frases — o backend natural aguenta mais, mas o corte ainda ajuda."""
     parts = [p.strip() for p in re.split(r"(?<=[.!?])\s+", text.strip()) if p.strip()]
     return parts or [text.strip()]
-
-
-def _clamp(value: float, lo: float, hi: float) -> float:
-    return max(lo, min(hi, value))
 
 
 class VoiceCoach:
@@ -50,19 +123,18 @@ class VoiceCoach:
         self._ready = threading.Event()
         self._backend = "unknown"
         self._voice_name: str | None = None
-        self._neural = is_neural_voice(VOICE_NAME)
         self._proc: subprocess.Popen | None = None
         self._proc_lock = threading.Lock()
         self._muted = False
-        self._stderr_thread: threading.Thread | None = None
+        self._ps1_path = self._write_ps1()
         self._thread = threading.Thread(target=self._worker, daemon=True, name="VoiceCoach-TTS")
         self._thread.start()
-        if not self._ready.wait(timeout=25):
+        if not self._ready.wait(timeout=20):
             print("  [voice] AVISO: TTS demorou para iniciar. Audio pode falhar.")
 
     @property
     def voice_name(self) -> str:
-        return self._voice_name or VOICE_NAME
+        return self._voice_name or _PREFERRED_VOICE
 
     @property
     def backend(self) -> str:
@@ -70,6 +142,12 @@ class VoiceCoach:
 
     def set_muted(self, muted: bool) -> None:
         self._muted = muted
+
+    def _write_ps1(self) -> str:
+        path = os.path.join(tempfile.gettempdir(), "coach_antonio_tts.ps1")
+        with open(path, "w", encoding="utf-8") as fh:
+            fh.write(_PS1)
+        return path
 
     def _rate_and_volume(self) -> tuple[int, int]:
         rate = max(-10, min(10, (VOICE_RATE - 150) // 10))
@@ -79,40 +157,21 @@ class VoiceCoach:
     def _tts_env(self) -> dict[str, str]:
         rate, volume = self._rate_and_volume()
         env = os.environ.copy()
-        env["COACH_TTS_VOICE"] = VOICE_NAME
         env["COACH_TTS_RATE"] = str(rate)
         env["COACH_TTS_VOLUME"] = str(volume)
-        env["COACH_TTS_SPEAKING_RATE"] = str(round(_clamp(VOICE_RATE / 150.0, 0.5, 6.0), 3))
-        env["COACH_TTS_PITCH"] = str(round(_clamp(VOICE_PITCH, 0.0, 2.0), 3))
-        env["COACH_TTS_AUDIO_VOLUME"] = str(round(_clamp(VOICE_VOLUME, 0.0, 1.0), 3))
-        env["COACH_TTS_EXIT"] = _EXIT
+        env["COACH_TTS_VOICE"] = _PREFERRED_VOICE
         return env
 
     def _handle_stderr_line(self, line: str) -> None:
         text = line.strip()
-        if not text:
+        if not text or text == "READY":
             return
         if text.startswith("VOICE:"):
             self._voice_name = text[6:].strip() or self._voice_name
-            self._neural = is_neural_voice(self._voice_name or "")
-            print(f"  [voice] selecionada: {self._voice_name}")
-            return
-        if text.startswith("BACKEND:"):
-            self._backend = text[8:].strip() or self._backend
-            print(f"  [voice] backend: {self._backend}")
-            return
-        if text == "READY":
             return
         print(f"  [voice] {text}")
 
-    def _drain_stderr(self) -> None:
-        proc = self._proc
-        if not proc or not proc.stderr:
-            return
-        for raw in proc.stderr:
-            self._handle_stderr_line(raw)
-
-    def _wait_until_ready(self, timeout: float = 20.0) -> bool:
+    def _wait_until_ready(self, timeout: float = 15.0) -> bool:
         proc = self._proc
         if not proc or not proc.stderr:
             return False
@@ -129,11 +188,18 @@ class VoiceCoach:
                 return True
         return False
 
+    def _drain_stderr(self) -> None:
+        proc = self._proc
+        if not proc or not proc.stderr:
+            return
+        for raw in proc.stderr:
+            self._handle_stderr_line(raw)
+
     def _start_tts_process(self) -> None:
         if self._proc and self._proc.poll() is None:
             return
         kwargs: dict = dict(
-            args=["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", _TTS_SCRIPT],
+            args=["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", self._ps1_path],
             stdin=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
@@ -145,13 +211,8 @@ class VoiceCoach:
         if os.name == "nt":
             kwargs["creationflags"] = _CREATE_NO_WINDOW
         self._proc = subprocess.Popen(**kwargs)
-        ready = self._wait_until_ready()
-        self._stderr_thread = threading.Thread(
-            target=self._drain_stderr, daemon=True, name="VoiceCoach-TTS-err"
-        )
-        self._stderr_thread.start()
-        if not ready:
-            print("  [voice] AVISO: loop TTS nao sinalizou READY.")
+        self._wait_until_ready()
+        threading.Thread(target=self._drain_stderr, daemon=True, name="VoiceCoach-TTS-err").start()
 
     def _stop_tts_process(self) -> None:
         proc = self._proc
@@ -190,16 +251,12 @@ class VoiceCoach:
     def _worker(self):
         try:
             self._start_tts_process()
-            if self._backend == "unknown":
-                self._backend = "powershell-persistent"
-            print("  [voice] build: antonio-d239")
-            shown = self._voice_name or VOICE_NAME
-            print(f"  [voice] TTS ativo ({self._backend}: {shown})")
-            if shown and "maria" in shown.casefold() and "antonio" in VOICE_NAME.casefold():
-                print("  [voice] AVISO: Antonio Natural nao foi selecionado. Instale a voz no Windows.")
+            self._backend = "powershell-persistent"
+            shown = self._voice_name or "(detectando voz)"
+            print(f"  [voice] TTS ativo via System.Speech ({shown})")
         except Exception as exc:
             self._backend = "powershell-persistent"
-            print(f"  [voice] System.Speech/WinRT indisponivel ({exc}).")
+            print(f"  [voice] System.Speech indisponivel ({exc}).")
         finally:
             self._ready.set()
 
@@ -209,16 +266,13 @@ class VoiceCoach:
                 self._queue.task_done()
                 self._stop_tts_process()
                 break
-
             try:
                 self._speak_line(text)
             except Exception as exc:
                 print(f"  [voice] ERRO ao falar: {exc}")
-
             self._queue.task_done()
 
     def test_speak(self) -> bool:
-        """Fala uma frase curta na inicializacao para confirmar que o audio funciona."""
         self.say("Coach de voz pronto.", alert_key=None, cooldown=0)
         deadline = time.time() + 12
         while self._queue.unfinished_tasks > 0 and time.time() < deadline:
@@ -239,7 +293,7 @@ class VoiceCoach:
                 return
             self._last_spoken[alert_key] = now
 
-        spoken = normalize_for_tts(text, phonetic=not self._neural)
+        spoken = normalize_for_tts(text)
         parts = _tts_parts(spoken)
         for part in parts:
             print(f"  [VOZ] {part}")
