@@ -12,6 +12,7 @@ from ui.desktop import run_ui
 
 
 def main():
+    print("API_LOL ANTONIO-LOCAL 2026-09-20")
     engine = CoachEngine()
     try:
         run_ui(engine)

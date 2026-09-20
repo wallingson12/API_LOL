@@ -29,82 +29,68 @@ if ($env:COACH_TTS_RATE) { $Rate = [int]$env:COACH_TTS_RATE }
 $Volume = 100
 if ($env:COACH_TTS_VOLUME) { $Volume = [int]$env:COACH_TTS_VOLUME }
 $ExitToken = '__EXIT__'
-
 function Log([string]$m) { [Console]::Error.WriteLine($m) }
 
-$cs = @'
-using System;
-using System.Collections;
-using System.Reflection;
-using System.Speech.Synthesis;
-public static class SpeechApiOneCore {
-  public static int Inject(SpeechSynthesizer synthesizer) {
-    Type st = typeof(SpeechSynthesizer);
-    Type cat = st.Assembly.GetType("System.Speech.Internal.ObjectTokens.ObjectTokenCategory");
-    Type vi = st.Assembly.GetType("System.Speech.Synthesis.VoiceInfo");
-    Type ivt = st.Assembly.GetType("System.Speech.Synthesis.InstalledVoice");
-    object vs = st.GetProperty("VoiceSynthesizer", BindingFlags.Instance|BindingFlags.NonPublic).GetValue(synthesizer, null);
-    System.Collections.IList installed = vs.GetType().GetField("_installedVoices", BindingFlags.Instance|BindingFlags.NonPublic).GetValue(vs) as IList;
-    object otc = cat.GetMethod("Create", BindingFlags.Static|BindingFlags.NonPublic).Invoke(null, new object[]{@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech_OneCore\Voices"});
-    int added = 0;
-    try {
-      IList tokens = cat.GetMethod("FindMatchingTokens", BindingFlags.Instance|BindingFlags.NonPublic).Invoke(otc, new object[]{null,null}) as IList;
-      foreach (object token in tokens) {
-        if (token == null) continue;
-        object info = st.Assembly.CreateInstance(vi.FullName, true, BindingFlags.Instance|BindingFlags.NonPublic, null, new object[]{token}, null, null);
-        object inst = st.Assembly.CreateInstance(ivt.FullName, true, BindingFlags.Instance|BindingFlags.NonPublic, null, new object[]{vs, info}, null, null);
-        InstalledVoice nv = (InstalledVoice)inst;
-        bool exists = false;
-        foreach (InstalledVoice old in installed) {
-          if (old != null && old.VoiceInfo != null && nv.VoiceInfo != null && old.VoiceInfo.Name == nv.VoiceInfo.Name) { exists = true; break; }
-        }
-        if (!exists) { installed.Add(inst); added++; }
-      }
-    } finally { if (otc is IDisposable) ((IDisposable)otc).Dispose(); }
-    return added;
-  }
-}
-'@
+$speaker = $null
+$picked = $null
 
-Add-Type -AssemblyName System.Speech
 try {
-  if (-not ([System.Management.Automation.PSTypeName]'SpeechApiOneCore').Type) {
-    Add-Type -ReferencedAssemblies ([System.Speech.Synthesis.SpeechSynthesizer].Assembly.Location) -TypeDefinition $cs
+  $speaker = New-Object -ComObject SAPI.SpVoice
+  $speaker.Rate = $Rate
+  $speaker.Volume = $Volume
+  $cat = New-Object -ComObject SAPI.SpObjectTokenCategory
+  $cat.SetId('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech_OneCore\Voices', $false)
+  $tokens = $cat.EnumerateTokens('', '')
+  foreach ($t in $tokens) {
+    $d = $t.GetDescription()
+    Log ("TOKEN:" + $d)
+    if (-not $picked -and $d -match 'Antonio') {
+      $speaker.Voice = $t
+      $picked = $d
+    }
   }
-} catch { Log ("ONECORE_COMPILE_FAIL:" + $_.Exception.Message) }
-
-$src = 'HKLM:\SOFTWARE\Microsoft\Speech_OneCore\Voices\Tokens'
-$dest = 'HKCU:\SOFTWARE\Microsoft\Speech\Voices\Tokens'
-if (Test-Path $src) {
-  if (-not (Test-Path $dest)) { New-Item -Path $dest -Force | Out-Null }
-  Get-ChildItem $src -ErrorAction SilentlyContinue | ForEach-Object {
-    Copy-Item $_.PSPath -Destination (Join-Path $dest $_.PSChildName) -Recurse -Force -ErrorAction SilentlyContinue
-  }
+} catch {
+  Log ("ONECORE_COM_FAIL:" + $_.Exception.Message)
 }
 
-$s = New-Object System.Speech.Synthesis.SpeechSynthesizer
-$s.Rate = $Rate
-$s.Volume = $Volume
-try { Log ("ONECORE_INJECTED:" + [SpeechApiOneCore]::Inject($s)) } catch { Log ("ONECORE_INJECT_FAIL:" + $_.Exception.Message) }
-
-$names = @($s.GetInstalledVoices() | ForEach-Object { $_.VoiceInfo.Name })
-Log ("SAPI_VOICES:" + ($names -join ' | '))
-
-$pick = $null
-foreach ($n in $names) { if ($n -match 'Antonio') { $pick = $n; break } }
-if (-not $pick) {
-  foreach ($v in $s.GetInstalledVoices()) {
-    if ($v.VoiceInfo.Culture.Name -like 'pt*') { $pick = $v.VoiceInfo.Name; break }
+if (-not $picked) {
+  Add-Type -AssemblyName System.Speech
+  $speaker = New-Object System.Speech.Synthesis.SpeechSynthesizer
+  $speaker.Rate = $Rate
+  $speaker.Volume = $Volume
+  foreach ($v in $speaker.GetInstalledVoices()) {
+    $n = $v.VoiceInfo.Name
+    Log ("SAPI:" + $n)
+    if (-not $picked -and $n -match 'Antonio') {
+      $speaker.SelectVoice($n)
+      $picked = $n
+    }
   }
+  if (-not $picked) {
+    foreach ($v in $speaker.GetInstalledVoices()) {
+      if ($v.VoiceInfo.Culture.Name -like 'pt*') {
+        $speaker.SelectVoice($v.VoiceInfo.Name)
+        $picked = $v.VoiceInfo.Name
+        break
+      }
+    }
+  }
+  $useDotNet = $true
+} else {
+  $useDotNet = $false
 }
-if ($pick) { $s.SelectVoice($pick) }
-Log ("VOICE:" + $s.Voice.Name)
+
+Log ("VOICE:" + $picked)
 Log 'READY'
 
 while ($null -ne ($line = [Console]::In.ReadLine())) {
   if ($line -eq $ExitToken) { break }
-  if ($line.Length -gt 0) {
-    try { $s.Speak($line) } catch { Log ("SPEAK_FAIL:" + $_.Exception.Message) }
+  if ($line.Length -le 0) { continue }
+  try {
+    if ($useDotNet) { $speaker.Speak($line) }
+    else { [void]$speaker.Speak($line, 0) }
+  } catch {
+    Log ("SPEAK_FAIL:" + $_.Exception.Message)
   }
 }
 """.strip()
@@ -253,7 +239,8 @@ class VoiceCoach:
             self._start_tts_process()
             self._backend = "powershell-persistent"
             shown = self._voice_name or "(detectando voz)"
-            print(f"  [voice] TTS ativo via System.Speech ({shown})")
+            print("  [voice] ANTONIO-LOCAL 2026-09-20")
+            print(f"  [voice] TTS local ({shown})")
         except Exception as exc:
             self._backend = "powershell-persistent"
             print(f"  [voice] System.Speech indisponivel ({exc}).")
